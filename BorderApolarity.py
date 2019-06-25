@@ -7,7 +7,8 @@ Created on Wed Mar 20 20:16:51 2019
 
 import numpy as np
 import sympy as sp
-from scipy.sparse import csr_matrix
+import queue
+from scipy.sparse import csr_matrix, vstack
 
 #Construct all compositions of n into k parts
 
@@ -26,7 +27,7 @@ def findComp(n,k):
 			for comp in findComp(n-i,k-1):
 				yield [i] + comp
 
-[c for c in findComp(5,3)]	
+#[c for c in findComp(5,3)]	
 
 def part(n, k):
 	def _part(n, k, pre):
@@ -85,7 +86,7 @@ def LB(E,a):
         c = [c1,c2]
         return c
 
-
+#implicitly Lowering for sln, i parametrizes torus basis and j corresponds to indexing of A \otimes B
 def LB1(i,j,n):
 	a = IND(j,n)
 	E = [i+1,i]
@@ -114,7 +115,7 @@ def LB1(i,j,n):
 	return b
 
 
-def SparseMatrixForLoweringOperator(i,n):
+def SparseMatLowOp(i,n):
 	row = []
 	col = []
 	data = []
@@ -128,6 +129,133 @@ def SparseMatrixForLoweringOperator(i,n):
 	M = csr_matrix((data,(row,col)),shape=(n**4,n**4))
 	return M
 
+#LowOps = [SparseMatLowOp(i,n) for i in range(n-1)]
+
+#V is csr_matrix vector n**4 by 1, mu must be hashable tuple
+def Weight(V1):
+	(l,l0) = V1.shape
+	n = int(l**(1/float(4)))
+	a = V1.nonzero()[0]
+	if a.size == 0:
+		return None
+	else:
+		c = IND(a[0],n)
+		c1 = np.zeros(n)
+		for i in range(2):
+			for j in range(2):
+				k = c[i][j]
+				c1[k] += (-1)**j
+		FW = np.zeros((n-1,n))
+		for i in range(n-1):
+			FW[i,i] = 1
+			FW[i,i+1] = -1
+		wt = tuple(map(int,FW.dot(c1)))
+		return wt
+			
+
+def LatticeElts(V,LowOps):
+	q = queue.Queue()
+	q.put(V)
+	mu = Weight(V)
+	Dict = {mu:V}
+	while q.empty() == False:
+		P = q.get()
+		for i in range(len(LowOps)):
+			P1 = LowOps[i].dot(P)
+			if P1.nnz != 0:
+				wt = Weight(P1)
+				if wt not in Dict:
+					Dict[wt] = P1
+					q.put(P1)
+				else:
+					P0 = Dict[wt].todense()
+					P2 = np.concatenate((P0,P1.todense()),axis=1)
+					r = np.linalg.matrix_rank(P2)
+					if r == P2.shape[1]:
+						Dict[wt] = csr_matrix(P2)
+						q.put(P1)
+	return Dict
+
+
+					
+
+
+n = 3
+V = np.zeros((n**4,1))
+V[IIND([[0,n-1],[0,n-1]],n)] = 1
+V = csr_matrix(V)
+LowOps = [SparseMatLowOp(i,n) for i in range(n-1)]
+L = LatticeElts(V,LowOps)
+
+
+'''
+Sage Codes for Poset
+
+E = L.keys()
+C = CartanMatrix(['A',n-1])
+Cinv = np.linalg.inv(C)
+f = lambda x,y: all(i >= 0 for i in Cinv.dot(np.subtract(y,x)))
+
+P = Poset((E,f))
+'''
+
+
+'''
+Sage Codes for counting all saturated chains
+
+LinExt = list(P.linear_extension())
+LinExt.reverse()
+N = [L[s].shape[1] for s in LinExt]
+
+
+K = [0]*len(L)
+
+
+def dfs_iterate(P,LinExt):
+	N = [L[s].shape[1] for s in LinExt]
+	K = [0]*len(L)
+	stack = [K]
+		
+'''
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+'''
+Dimensions for Kernel of intersections of lowering operators
+
+K = list of operators considered
+
+def dimker(K,n):
+	if len(K) == 0:
+		return None
+	else:
+		M = []
+		for k in K:
+			M += SparseMatLowOp(k,n)
+		M1 = vstack(M)
+		M2 = sp.Matrix(M1.todense())
+		null = M2.nullspace()
+		return len(null)
+
+
+s = set of all lowering operators
+def subsets(s):
+	l = []
+	for i in range(1,len(s)):
+		l += list(map(set,itertools.combinatios(s,i)))
+	return l
+
+
+l = subsets(s)
+l1 = [dimker(r,n) for r in subsets(s)]
