@@ -160,7 +160,7 @@ def TorusRestrict(wt,n):
 		if v1[i][0] == [0,0] or v1[i][1] == [0,0]:
 			w0.append(v1[i])
 	if len(w0) == 0:
-		return None
+		return [None]
 	else:
 		w = []
 		for i in range(len(w0)):
@@ -187,7 +187,10 @@ def HWV(wt,n):
 	v = FindWtVecs(wt,n)
 	Q = HWV0(wt,n).todense()
 	w = TorusRestrict(wt,n)
-	Q1 = np.concatenate((Q,w),axis=0)
+	if len(w) == 1:
+		Q1  = Q
+	else:
+		Q1 = np.concatenate((Q,w),axis=0)
 	Q2 = sp.Matrix(Q1)
 	null = Q2.nullspace()
 	v1 = [IND(k,n) for k in v]

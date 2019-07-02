@@ -179,7 +179,7 @@ def LatticeElts(V,LowOps):
 
 					
 
-
+'''
 n = 3
 V = np.zeros((n**4,1))
 V[IIND([[0,n-1],[0,n-1]],n)] = 1
@@ -188,19 +188,19 @@ LowOps = [SparseMatLowOp(i,n) for i in range(n-1)]
 L = LatticeElts(V,LowOps)
 
 
-'''
+
 Sage Codes for Poset
 
 E = L.keys()
 C = CartanMatrix(['A',n-1])
 Cinv = np.linalg.inv(C)
-f = lambda x,y: all(i >= 0 for i in Cinv.dot(np.subtract(y,x)))
+f = lambda x,y: all(i >= 0 for i in map(int,round(Cinv.dot(np.subtract(y,x)))))
+
+
 
 P = Poset((E,f))
-'''
 
 
-'''
 Sage Codes for counting all saturated chains
 
 LinExt = list(P.linear_extension())
@@ -259,3 +259,4 @@ def subsets(s):
 
 l = subsets(s)
 l1 = [dimker(r,n) for r in subsets(s)]
+'''
