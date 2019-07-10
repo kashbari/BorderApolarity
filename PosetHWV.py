@@ -1,7 +1,8 @@
 import numpy as np
 import sympy as sp
-import queue,itertools
-from scipy.sparse import csr_matrix, vstack
+import queue,itertools,math
+import scipy.sparse
+from scipy.sparse import csr_matrix,vstack,hstack
 import BorderApolarity
 
 #L = LatticeElts(V,LowOps)
@@ -53,7 +54,7 @@ def conditions(K,LE,N,P,DIMKER):
 						pi = [LE.index(p) for p in parents]
 						lo = [np.subtract(p,LE[i]).tolist().index(2) for p in parents]
 						for s in subsets(lo):
-							sum = dimker[s]
+							sum = DIMKER[s]
 							for i in s:
 								sum += K[pi[lo.index(i)]]
 							if K[j] <= sum:
@@ -62,4 +63,34 @@ def conditions(K,LE,N,P,DIMKER):
 								Test = False
 		else:
 			Test = False
-	return Test			
+	return Test
+
+
+
+
+
+
+
+'''
+Given E corresponding hyperplane annihilating it, return A* times E
+m = dim sln
+E is csr_matrix
+'''
+def S2AB(E,m):
+	p,q = E.shape
+	I,J,D = scipy.sparse.find(E)
+	I1 = []
+	J1 = []
+	D1 = []
+	for i in list(I):
+		for k in range(m):
+			I1.extend([m*i+k])
+	for j in list(J):
+		for k in range(m):
+			J1.extend([m*j+k])
+	for d in list(D):
+		D1.extend([d]*m)
+	M = csr_matrix((D1,(I1,J1)),shape=(p*m,q*m))
+	return M
+
+
