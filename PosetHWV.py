@@ -165,7 +165,7 @@ def wvs(K,N,L,LE):
 		a = []
 		b = []
 		for i in range(len(K)):
-			if K[i] < N[i]:
+			if K[i] < N[i] and K[i] > 0:
 				a.append(i)
 				b.append((K[i],N[i]))
 		A = []
@@ -181,16 +181,17 @@ def wvs0(A,dimS2AB,r):
 	B = hstack(A)
 	B = trim(S2AB(B))
 	rk = sms.rank(B)
-	if dimS2AB - rk > r:
+	if dimS2AB - rk > r-1:
 		t = True
 	else:
 		t = False
-	return t,rk
+	return t
 
 #use if len(a) != 0
-def wvs1(A,a,b):
-
-	return t,B,b1
+def wvs1(A,dimS2AB,r):
+	r1 = dimS2AB - r
+	t = minRK1(A,r1)
+	return t
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
 	I,J,K = scipy.sparse.find(A)
@@ -213,7 +214,18 @@ def Multiply(A,B):
 	B1 = B1.sparse_matrix()
 	return B1
 
-
+def shstack(A,ring):
+	B = [a for a in A if a != None]
+	B1 = [b.dict() for b in B]
+	D = {}
+	m = 0
+	for i in range(len(B1)):
+		for (j,k) in B1[i]:
+			D[(j,k+m)] = B1[i][(j,k)]
+		m += B[i].ncols()
+	rows = B[0].nrows()
+	A1 = matrix(ring,rows,m,D)
+	return A1
 
 
 '''
@@ -267,6 +279,14 @@ def minRK(A):
 	return k-1
 
 
+
+def minRK1(A,r):
+	I = ideal(A.minors(r+1)).groebner_basis()
+	if I != [1]:
+		t = False
+	else:
+		t = True
+	return t
 
 
 

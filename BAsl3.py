@@ -132,19 +132,54 @@ def AnnPlane(c,dimS2AB,r):
 		A11,a11,b11 = wvs(K[4],N11,Dict11,LE11)
 		if a22 == a30 == a03 == a00 == a11 == []:
 			A = A22 + A30 + A03 + A00 + A11
-			t,rk = wvs0(A,dimS2AB,r)
+			t = wvs0(A,dimS2AB,r)
 			if t == True:
-				print(c,K,rk)
+				print(c,K)
 		else:
 			A22 = Convert1(A22)
 			A30 = Convert1(A30)
 			A03 = Convert1(A03)
 			A00 = Convert1(A00)
 			A11 = Convert1(A11)
-			aa = len(a22) + len(a30) + len(a03) + len(a00) + len(a11)
+			A = A22 + A30 + A03 + A00 + A11
+			for k in range(len(a30)):
+				a30[k] = a30[k] + len(A22)
+			for k in range(len(a03)):
+				a03[k] = a03[k] + len(A22)+len(A30)
+			for k in range(len(a00)):
+				a00[k] = a00[k] + len(A22)+len(A30)+len(A03)
+			for k in range(len(a11)):
+				a11[k] = a11[k] + len(A22)+len(A30)+len(A03)+len(A00)
 			a = a22+ a30+a03+a00+a11
+			aa = len(a)
 			bb = Max(b22+ b30+ b03+ b00 +b11)
-			R = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+			G22 = []
+			G30 = []
+			G03 = []
+			G00 = []
+			G11 = []
+			for k in range(len(a22)):
+				G22 = G22.extend([GrassCharts1(b22[k][0],b22[k][1],RING,k,aa,bb)])
+			for k in range(len(a30)):
+				G30 = G30.extend([GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),aa,bb)])
+			for k in range(len(a03)):
+				G03 = G03.extend([GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),aa,bb)])
+			for k in range(len(a00)):
+				G00 = G00.extend([GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),aa,bb)])
+			for k in range(len(a11)):
+				G11 = G11.extend([GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
+			G = G22 + G30 + G03 + G00 + G11
+			for g in itertools.product(*G):
+				for j in range(len(a)):
+					A[a[j]] = A[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
+				for j in range(len(A)):
+					if A[j] != None:
+						A[j] = matrix(RING,A[j])
+				A = shstack(A,RING)
+				t = wsv1(A,dimS2AB,r)
+				if t == True:
+					print(K,g)
 	return 
 
 		
