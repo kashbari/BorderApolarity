@@ -92,6 +92,7 @@ def HWVGrassmannian(c):
 
 
 def AnnPlane(c,dimS2AB,r):
+	print(c)
 	H22,H30,H03,H00,H11 = HWVGrassmannian(c)
 	if len(H22) == 0:
 		H22.append(None)
@@ -104,43 +105,45 @@ def AnnPlane(c,dimS2AB,r):
 	if len(H11) == 0:
 		H11.append(None)
 	for z in itertools.product(H22,H30,H03,H00,H11):
+		print(z)
 		K = []
 		if z[0] != None:
-			K.append(np.subtract(N22,z[0]))
+			K.append(list(np.subtract(N22,z[0])))
 		else:
-			K.append(None)
+			K.append([])
 		if z[1] != None:
-			K.append(np.subtract(N30,z[1]))
+			K.append(list(np.subtract(N30,z[1])))
 		else:
-			K.append(None)
+			K.append([])
 		if z[2] != None:
-			K.append(np.subtract(N03,z[2]))
+			K.append(list(np.subtract(N03,z[2])))
 		else:
-			K.append(None)
+			K.append([])
 		if z[3] != None:
-			K.append(np.subtract(N00,z[3]))
+			K.append(list(np.subtract(N00,z[3])))
 		else:
-			K.append(None)
+			K.append([])
 		if z[4] != None:
-			K.append(np.subtract(N11,z[4]))
+			K.append(list(np.subtract(N11,z[4])))
 		else:
-			K.append(None)
-		A22,a22,b22 = wvs(K[0],N22,Dict22,LE22)
-		A30,a30,b30 = wvs(K[1],N30,Dict30,LE30)
-		A03,a03,b03 = wvs(K[2],N03,Dict03,LE03)
-		A00,a00,b00 = wvs(K[3],N00,Dict00,LE00)
-		A11,a11,b11 = wvs(K[4],N11,Dict11,LE11)
+			K.append([])
+		print(K)
+		A22,a22,b22 = PosetHWV.wvs(K[0],N22,Dict22,LE22)
+		A30,a30,b30 = PosetHWV.wvs(K[1],N30,Dict30,LE30)
+		A03,a03,b03 = PosetHWV.wvs(K[2],N03,Dict03,LE03)
+		A00,a00,b00 = PosetHWV.wvs(K[3],N00,Dict00,LE00)
+		A11,a11,b11 = PosetHWV.wvs(K[4],N11,Dict11,LE11)
 		if a22 == a30 == a03 == a00 == a11 == []:
 			A = A22 + A30 + A03 + A00 + A11
-			t = wvs0(A,dimS2AB,r)
-			if t == True:
-				print(c,K)
+			rk = PosetHWV.wvs0(A,dimS2AB,r,n)
+			if dimS2AB -r >= rk:
+				print(K)
 		else:
-			A22 = Convert1(A22)
-			A30 = Convert1(A30)
-			A03 = Convert1(A03)
-			A00 = Convert1(A00)
-			A11 = Convert1(A11)
+			A22 = PosetHWV.Convert1(A22)
+			A30 = PosetHWV.Convert1(A30)
+			A03 = PosetHWV.Convert1(A03)
+			A00 = PosetHWV.Convert1(A00)
+			A11 = PosetHWV.Convert1(A11)
 			A = A22 + A30 + A03 + A00 + A11
 			for k in range(len(a30)):
 				a30[k] = a30[k] + len(A22)
@@ -152,23 +155,26 @@ def AnnPlane(c,dimS2AB,r):
 				a11[k] = a11[k] + len(A22)+len(A30)+len(A03)+len(A00)
 			a = a22+ a30+a03+a00+a11
 			aa = len(a)
-			bb = Max(b22+ b30+ b03+ b00 +b11)
+			bb = PosetHWV.Max(b22+ b30+ b03+ b00 +b11)
 			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+			print(RING)
 			G22 = []
 			G30 = []
 			G03 = []
 			G00 = []
 			G11 = []
 			for k in range(len(a22)):
-				G22 = G22.extend([GrassCharts1(b22[k][0],b22[k][1],RING,k,aa,bb)])
+				G22 = G22.extend([PosetHWV.GrassCharts1(b22[k][0],b22[k][1],RING,k,aa,bb)])
 			for k in range(len(a30)):
-				G30 = G30.extend([GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),aa,bb)])
+				G30 = G30.extend([PosetHWV.GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),aa,bb)])
 			for k in range(len(a03)):
-				G03 = G03.extend([GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),aa,bb)])
+				G03 = G03.extend([PosetHWV.GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),aa,bb)])
 			for k in range(len(a00)):
-				G00 = G00.extend([GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),aa,bb)])
+				G00 = G00.extend([PosetHWV.GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),aa,bb)])
 			for k in range(len(a11)):
-				G11 = G11.extend([GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
+				G11 = G11.extend([PosetHWV.GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
+			print('These are Gs')
+			print(G22,G30,G03,G00,G11)
 			G = G22 + G30 + G03 + G00 + G11
 			for g in itertools.product(*G):
 				for j in range(len(a)):
@@ -177,11 +183,17 @@ def AnnPlane(c,dimS2AB,r):
 					if A[j] != None:
 						A[j] = matrix(RING,A[j])
 				A = shstack(A,RING)
-				t = wsv1(A,dimS2AB,r)
+				t = PosetHWV.wsv1(A,dimS2AB,r,n,RING)
 				if t == True:
 					print(K,g)
 	return 
 
 		
 
- 
+
+
+
+c = [2,2,1,1,1]
+
+
+

@@ -9,7 +9,7 @@ from collections import deque
 import sys
 from sage.all import *
 
-#import sms
+import sms
 
 
 #L = LatticeElts(V,LowOps)
@@ -157,40 +157,36 @@ def GrassCharts1(k,n,ring,q,aa,bb):
 	return A 
 
 
-def wvs(K,N,L,LE):
-	if K[0] == None:
+def wvs(T,N,L,LE):
+	if len(T) == 0:
 		A,a,b = [None],[],[]
 	else:
-		assert len(K) == len(N)
 		a = []
 		b = []
-		for i in range(len(K)):
-			if K[i] < N[i] and K[i] > 0:
+		for i in range(len(T)):
+			if T[i] < N[i] and T[i] > 0:
 				a.append(i)
-				b.append((K[i],N[i]))
+				b.append((T[i],N[i]))
 		A = []
-		for j in range(len(K)):
-			if K[j] != 0:
+		for j in range(len(T)):
+			if T[j] != 0:
 				A.append(L[LE[j]])
 			else:
 				A.append(None)
 	return A,a,b
 
 #use if len(a) == 0
-def wvs0(A,dimS2AB,r):
-	B = hstack(A)
-	B = trim(S2AB(B))
+def wvs0(A,dimS2AB,r,n):
+	B = hstack([a for a in A if a != None])
+	B = S2AB(B,n**2-1)
 	rk = sms.rank(B)
-	if dimS2AB - rk > r-1:
-		t = True
-	else:
-		t = False
-	return t
+	return rk
 
 #use if len(a) != 0
-def wvs1(A,dimS2AB,r):
+def wvs1(A,dimS2AB,r,n,ring):
 	r1 = dimS2AB - r
-	t = minRK1(A,r1)
+	B = S2AB1(A,n**2-1,ring)
+	t = minRK1(B,r1)
 	return t
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
@@ -251,17 +247,18 @@ def S2AB(E,m):
 	return M
 
 
-def S2AB1(E,m):
+def S2AB1(E,m,ring):
 	p = E.nrows()
 	q = E.ncols()
-	D = W2.dict()
+	D = E.dict()
 	D1 = {}
 	for k in range(m):
 		for l in range(m):
 			for (i,j) in D:
 				D1[(m*i+k,m*j+l)] = D[(i,j)]
-	M = matrix(p*m,q*m,D1,sparse=True)
+	M = matrix(ring,p*m,q*m,D1,sparse=True)
 	return M
+
 #A is csr_matrix, removes zero rows and zero columns
 def trim(A):
 	B = A[A.getnnz(1)>0][:,A.getnnz(0)>0]
