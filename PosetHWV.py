@@ -6,6 +6,12 @@ from scipy.sparse import csr_matrix,vstack,hstack
 import BorderApolarity
 from collections import deque
 
+import sys
+from sage.all import *
+
+#import sms
+
+
 #L = LatticeElts(V,LowOps)
 #E = L.keys()
 #C = CartanMatrix(['A',n-1])
@@ -118,7 +124,96 @@ def dfs(p,LE,NN,P,DIMKER):
 					if (r[k] <= NN[k]) and (cond(r,k,LE,P,DIMKER) == True):
 						Stack.append(r)
 	return Hwvs
- 
+
+#auxiliary max fcn
+def Max(b):
+	m = 0
+	for i in range(len(b)):
+		if b[i][1]-b[i][0] > m:
+			m = b[i][1]-b[i][0]
+		else:
+			m = m
+	return m
+#R = PolynomialRing(QQ, (n-k)*k,x)
+
+def GrassCharts(k,n,pivots,ring,q,aa,bb):
+	assert len(pivots) == k and sorted(pivots) == list(pivots)
+	M = matrix(ring,k,n)
+	taken = []
+	for (row,pivot) in enumerate(pivots):
+		M[row,pivots] = 1
+		taken.extend((i,pivot) for i in range(k))
+		taken.extend((row,j) for j in range(pivot))
+	indet_indices = [(i,j) for i in range(k) for j in range(n) if not (i,j) in taken]
+	for (idx,y) in zip(indet_indices,ring.gens()[q*bb:(q+1)*bb]):
+		M[idx] = y
+	return M
+
+
+def GrassCharts1(k,n,ring,q,aa,bb):
+	A = []
+	for pivots in itertools.combinations(range(n),k):
+		A.extend(GrassCharts(k,n,pivots,ring,q,aa,bb))
+	return A 
+
+
+def wvs(K,N,L,LE):
+	if K[0] == None:
+		A,a,b = [None],[],[]
+	else:
+		assert len(K) == len(N)
+		a = []
+		b = []
+		for i in range(len(K)):
+			if K[i] < N[i]:
+				a.append(i)
+				b.append((K[i],N[i]))
+		A = []
+		for j in range(len(K)):
+			if K[j] != 0:
+				A.append(L[LE[j]])
+			else:
+				A.append(None)
+	return A,a,b
+
+#use if len(a) == 0
+def wvs0(A,dimS2AB,r):
+	B = hstack(A)
+	B = trim(S2AB(B))
+	rk = sms.rank(B)
+	if dimS2AB - rk > r:
+		t = True
+	else:
+		t = False
+	return t,rk
+
+#use if len(a) != 0
+def wvs1(A,a,b):
+
+	return t,B,b1
+#Convert from csr_matrix to sage sparse matrix
+def Convert(A):
+	I,J,K = scipy.sparse.find(A)
+	dat = {(i,j):v for i,j,v in zip(I,J,K)}
+	A1 = matrix(A.shape[0],A.shape[1],dat,sparse=True)
+	A1 = A1.sparse_matrix()
+	return A1
+
+def Convert1(A):
+	for i in range(len(A)):
+		if A[i] != None:
+			A[i] = Convert(A[i])
+	return A
+#Multiply A csr_matrix with B a sage Matrix
+def Multiply(A,B):
+	I,J,K = scipy.sparse.find(A)
+	dat = {(i,j):v for i,j,v in zip(I,J,K)}
+	A1 = matrix(A.shape[0],A.shape[1],dat,sparse=True)
+	B1 = A1*B
+	B1 = B1.sparse_matrix()
+	return B1
+
+
 
 
 '''
@@ -141,6 +236,19 @@ def S2AB(E,m):
 	for d in list(D):
 		D1.extend([d]*m)
 	M = csr_matrix((D1,(I1,J1)),shape=(p*m,q*m))
+	return M
+
+
+def S2AB1(E,m):
+	p = E.nrows()
+	q = E.ncols()
+	D = W2.dict()
+	D1 = {}
+	for k in range(m):
+		for l in range(m):
+			for (i,j) in D:
+				D1[(m*i+k,m*j+l)] = D[(i,j)]
+	M = matrix(p*m,q*m,D1,sparse=True)
 	return M
 #A is csr_matrix, removes zero rows and zero columns
 def trim(A):
