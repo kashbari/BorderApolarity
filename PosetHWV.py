@@ -253,9 +253,8 @@ def S2AB1(E,m,ring):
 	D = E.dict()
 	D1 = {}
 	for k in range(m):
-		for l in range(m):
-			for (i,j) in D:
-				D1[(m*i+k,m*j+l)] = D[(i,j)]
+		for (i,j) in D:
+			D1[(m*i+k,m*j+k)] = D[(i,j)]
 	M = matrix(ring,p*m,q*m,D1,sparse=True)
 	return M
 
