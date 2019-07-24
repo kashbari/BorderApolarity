@@ -9,7 +9,7 @@ from collections import deque
 import sys
 from sage.all import *
 
-import sms
+#import sms
 
 
 #L = LatticeElts(V,LowOps)
@@ -223,6 +223,19 @@ def shstack(A,ring):
 	A1 = matrix(ring,rows,m,D)
 	return A1
 
+def DictS2AB(m):
+	Dict = {}
+	for k in range(m**2):
+		q = int(np.floor(k/m))
+		r = k % m
+		if q == 0:
+			Dict[k] = range(k*m,(k+1)*m)
+		else:
+			a = [Dict[m*i+r][q] for i in range(q)]
+			s = np.array([(m-i)*m for i in range(q)]).sum()
+			b = range(s+r*(m-q),s+(r+1)*(m-q))
+			Dict[k] = a + b
+	return Dict
 
 '''
 Given E corresponding hyperplane annihilating it, return A* times E
@@ -237,7 +250,7 @@ def S2AB(E,m):
 	D1 = []
 	for i in list(I):
 		for k in range(m):
-			I1.extend([m*i+k])
+			I1.extend(Dict[i])
 	for j in list(J):
 		for k in range(m):
 			J1.extend([m*j+k])
