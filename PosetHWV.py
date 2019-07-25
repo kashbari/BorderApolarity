@@ -10,7 +10,7 @@ from collections import deque
 import sys
 from sage.all import *
 
-#import sms
+import sms
 
 
 #L = LatticeElts(V,LowOps)
@@ -187,7 +187,7 @@ def wvs0(A,dimS2AB,r,n):
 def wvs1(A,dimS2AB,r,n,ring):
 	r1 = dimS2AB - r
 	B = S2AB1(A,n**2-1,ring)
-	t = PartialSmithForm.MinRank(B,ring,s,dimS2AB)
+	t = PartialSmithForm.MinRank(B,ring,r,dimS2AB)
 	return t
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
@@ -223,7 +223,7 @@ def shstack(A,ring):
 	rows = B[0].nrows()
 	A1 = matrix(ring,rows,m,D)
 	return A1
-
+'''
 def DictS2AB(m):
 	Dict = {}
 	for k in range(m**2):
@@ -238,7 +238,7 @@ def DictS2AB(m):
 			Dict[k] = a + b
 	return Dict
 
-'''
+
 Given E corresponding hyperplane annihilating it, return A* times E
 m = dim sln
 E is csr_matrix
@@ -251,7 +251,7 @@ def S2AB(E,m):
 	D1 = []
 	for i in list(I):
 		for k in range(m):
-			I1.extend(Dict[i])
+			I1.extend([m*i+k])
 	for j in list(J):
 		for k in range(m):
 			J1.extend([m*j+k])

@@ -104,6 +104,7 @@ def AnnPlane(c,dimS2AB,r):
 		H00.append(None)
 	if len(H11) == 0:
 		H11.append(None)
+	print(c)
 	for z in itertools.product(H22,H30,H03,H00,H11):
 		K = []
 		if z[0] != None:
@@ -131,11 +132,13 @@ def AnnPlane(c,dimS2AB,r):
 		A03,a03,b03 = PosetHWV.wvs(K[2],N03,Dict03,LE03)
 		A00,a00,b00 = PosetHWV.wvs(K[3],N00,Dict00,LE00)
 		A11,a11,b11 = PosetHWV.wvs(K[4],N11,Dict11,LE11)
+		print(K)
 		if a22 == a30 == a03 == a00 == a11 == []:
 			A = A22 + A30 + A03 + A00 + A11
 			rk = PosetHWV.wvs0(A,dimS2AB,r,n)
 			if dimS2AB -r >= rk:
 				print('Candidate')
+				print(K)
 			else:
 				print('No Candidate')
 		else:
@@ -182,9 +185,11 @@ def AnnPlane(c,dimS2AB,r):
 					if B[j] != None:
 						B[j] = matrix(RING,B[j])
 				B = PosetHWV.shstack(B,RING)
-				t = PosetHWV.wvs1(B,dimS2AB,r,n,ring)	
+				t = PosetHWV.wvs1(B,dimS2AB,r,n,RING)	
 				if t == True:
-					print('Candidate')
+					print('Candidate with parameters')
+					print(K)
+					print(g)
 				else:
 					print('No Candidate')
 	return 

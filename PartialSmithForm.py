@@ -5,13 +5,13 @@ test if rank \leq k
 '''
 import sys
 from sage.all import *
-
-#Test Example
+'''
+Test Example
 R = PolynomialRing(QQ,3,'x,y,z')
 R.inject_variables()
 D = {(27,0):2*x+z,(47,0):2,(20,1):y,(8,1):3*z-y}
 M = matrix(R,81,2,D,sparse=True)
-
+'''
 
 # Trim down sparse Matrix
 def nonzerorows(M):
@@ -96,8 +96,8 @@ def PSmithForm(M,ring):
 			P = SwapRow(P,i,l)
 		if j != l:
 			P = SwapCol(P,j,l)
-		if P[l,l] != 1:
-			P = MultRow(P,l,1/P[l,l])
+#		if P[l,l] != 1:
+#			P = MultRow(P,l,1/P[l,l])
 		for k in range(l+1,M.nrows()):
 			P = RowOp(ring,P,k,l,-P[k,l])
 		for k in range(l+1,M.ncols()):
@@ -111,8 +111,9 @@ def PSmithForm(M,ring):
 # Minors for minimum rank
 
 def MinRank(M,ring,s,dimS2AB):
-	r,B = PSmithForm(M,ring)
-	m = min(M.nrows(),M.ncols())
+	TM = Trim(M)
+	r,B = PSmithForm(TM,ring)
+	m = min(TM.nrows(),TM.ncols())
 	if r+1 >= s:
 		return False
 	else:
@@ -122,10 +123,10 @@ def MinRank(M,ring,s,dimS2AB):
 		for k in range(1,alpha):
 			K.extend(B.minors(k))
 		I = ideal(K).groebner_basis()
-		if I == [1]:
-			return False
-		else:
+		if I != [1]:
 			return True
+		else:
+			return False
 
 		
 
