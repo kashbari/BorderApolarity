@@ -4,6 +4,7 @@ import queue,itertools,math
 import scipy.sparse
 from scipy.sparse import csr_matrix,vstack,hstack
 import BorderApolarity
+import PartialSmithForm
 from collections import deque
 
 import sys
@@ -186,7 +187,7 @@ def wvs0(A,dimS2AB,r,n):
 def wvs1(A,dimS2AB,r,n,ring):
 	r1 = dimS2AB - r
 	B = S2AB1(A,n**2-1,ring)
-	t = minRK1(B,r1)
+	t = PartialSmithForm.MinRank(B,ring,s,dimS2AB)
 	return t
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):

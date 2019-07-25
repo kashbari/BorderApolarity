@@ -182,11 +182,11 @@ def AnnPlane(c,dimS2AB,r):
 					if B[j] != None:
 						B[j] = matrix(RING,B[j])
 				B = PosetHWV.shstack(B,RING)
-				r1 = dimS2AB - r
-				print('unknown')
-				t = PosetHWV.minRK1(B,r1)	
+				t = PosetHWV.wvs1(B,dimS2AB,r,n,ring)	
 				if t == True:
 					print('Candidate')
+				else:
+					print('No Candidate')
 	return 
 
 		

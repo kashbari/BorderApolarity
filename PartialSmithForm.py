@@ -91,33 +91,43 @@ def PSmithForm(M,ring):
 	l = 0
 	p = Pivots(M,l)
 	while len(p) != 0:
-		print(P)
-		print(l)
 		i,j = p[0]
 		if i != l:
 			P = SwapRow(P,i,l)
-		print('swaprow',l)
-		print(P)
 		if j != l:
 			P = SwapCol(P,j,l)
-		print('swapcol',l)
-		print(P)
 		if P[l,l] != 1:
-			print(P[l,l])
 			P = MultRow(P,l,1/P[l,l])
-		print('multrow',l)
-		print(P)
 		for k in range(l+1,M.nrows()):
 			P = RowOp(ring,P,k,l,-P[k,l])
-		print('rowop',l)
-		print(P)
 		for k in range(l+1,M.ncols()):
 			P = ColOp(ring,P,k,l,-P[l,k])
 		l += 1
-		p = Pivots(M,l)
+		p = Pivots(P,l)
 	r = l
 	B = P[r:,r:]
-	return P,r,B	
+	return r,B	
 
-# Minors
+# Minors for minimum rank
+
+def MinRank(M,ring,s,dimS2AB):
+	r,B = PSmithForm(M,ring)
+	m = min(M.nrows(),M.ncols())
+	if r+1 >= s:
+		return False
+	else:
+		s1 = dimS2AB - s
+		alpha = s1+1-r
+		K = []
+		for k in range(1,alpha):
+			K.extend(B.minors(k))
+		I = ideal(K).groebner_basis()
+		if I == [1]:
+			return False
+		else:
+			return True
+
+		
+
+
 
