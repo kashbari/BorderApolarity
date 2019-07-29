@@ -5,13 +5,13 @@ test if rank \leq k
 '''
 import sys
 from sage.all import *
-
-#Test Example
+'''
+Test Example
 R = PolynomialRing(QQ,3,'x,y,z')
 R.inject_variables()
 D = {(27,0):2*x+z,(47,0):2,(20,1):y,(8,1):3*z-y}
 M = matrix(R,81,2,D,sparse=True)
-
+'''
 
 # Trim down sparse Matrix
 def nonzerorows(M):
@@ -29,20 +29,21 @@ def nonzerocols(M):
 def Trim(M):
 	I = nonzerorows(M)
 	J = nonzerocols(M)
-	tM = M[I,:][:,J]
+	tM = M[I,:][:,J].sparse_matrix()
 	return tM
 
 
 # Echelon Form
 def Pivots(M,l):
 	NZ = []
-	for i in range(l,M.nrows()):
-		for j in range(l,M.ncols()):
+	for (i,j) in M.dict():
+		if (i >= l) and (j >= l):
 			if M[i][j] in QQ and M[i][j] != 0:
 				NZ.append((i,j))
+				break
 	return NZ
 
-
+'''
 def SwapRow(N,i,j):
 	k = N.nrows()
 	S = matrix.identity(QQ,k)
@@ -63,7 +64,7 @@ def SwapCol(N,i,j):
 	N1 = N*S
 	return N1
 
-#Multiply row j by a and add it to i
+Multiply row j by a and add it to i
 def RowOp(ring,T,i,j,a):
 	k = T.nrows()
 	S = matrix.identity(ring,k)
@@ -84,7 +85,7 @@ def MultRow(T,i,a):
 	S[i,i] = a
 	T1 = S*T
 	return T1
-
+'''
 
 def PSmithForm(M,ring):
 	P = copy(M)
@@ -93,15 +94,15 @@ def PSmithForm(M,ring):
 	while len(p) != 0:
 		i,j = p[0]
 		if i != l:
-			P = SwapRow(P,i,l)
+			P.swap_rows(i,l)
 		if j != l:
-			P = SwapCol(P,j,l)
+			P.swap_columns(j,l)
 		if P[l,l] != 1:
-			P = MultRow(P,l,1/P[l,l])
+			P.add_multiple_of_row(l,l,(1-P[l,l])/P[l,l])
 		for k in range(l+1,M.nrows()):
-			P = RowOp(ring,P,k,l,-P[k,l])
+			P.add_multiple_of_row(k,l,-P[k,l])
 		for k in range(l+1,M.ncols()):
-			P = ColOp(ring,P,k,l,-P[l,k])
+			P.add_multiple_of_column(k,l,-P[l,k])
 		l += 1
 		p = Pivots(P,l)
 	r = l
@@ -111,8 +112,9 @@ def PSmithForm(M,ring):
 # Minors for minimum rank
 
 def MinRank(M,ring,s,dimS2AB):
-	r,B = PSmithForm(M,ring)
-	m = min(M.nrows(),M.ncols())
+	TM = Trim(M)
+	r,B = PSmithForm(TM,ring)
+	m = min(TM.nrows(),TM.ncols())
 	if r+1 >= s:
 		return False
 	else:
@@ -122,12 +124,8 @@ def MinRank(M,ring,s,dimS2AB):
 		for k in range(1,alpha):
 			K.extend(B.minors(k))
 		I = ideal(K).groebner_basis()
-		if I == [1]:
-			return False
-		else:
+		if I != [1]:
 			return True
-
+		else:
+			return False
 		
-
-
-

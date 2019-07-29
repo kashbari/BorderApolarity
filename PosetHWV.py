@@ -14,6 +14,7 @@ from sage.all import *
 #import sms
 
 
+
 #L = LatticeElts(V,LowOps)
 #E = L.keys()
 #C = CartanMatrix(['A',n-1])
@@ -190,8 +191,10 @@ def wvs0(A,dimS2AB,r,n):
 def wvs1(A,dimS2AB,r,n,ring):
 	r1 = dimS2AB - r
 	B = S2AB1(A,n**2-1,ring)
-	t = PartialSmithForm.MinRank(B,ring,r1,dimS2AB)
+	#r,B1 = PartialSmithForm.PSmithForm(B,ring)
+	t = PartialSmithForm.MinRank(B,ring,r,dimS2AB)
 	return t
+
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
 	I,J,K = scipy.sparse.find(A)
@@ -259,25 +262,25 @@ def COB(n):
 
 def COB1(B,n):
 	S = COB(n)
-	B = Multiply(S,B)
+	B = Multiply(S,B).sparse_matrix()
 	return B
 
 
 
 '''	
+
 Given E corresponding hyperplane annihilating it, return A* times E
 m = dim sln
 E is csr_matrix
 '''
-def S2AB(E,m):
+def S2AB(E,m,DS2AB):
 	p,q = E.shape
 	I,J,D = scipy.sparse.find(E)
 	I1 = []
 	J1 = []
 	D1 = []
 	for i in list(I):
-		for k in range(m):
-			I1.extend(Dict[i])
+		I1.extend(DS2AB[i])
 	for j in list(J):
 		for k in range(m):
 			J1.extend([m*j+k])
@@ -287,15 +290,17 @@ def S2AB(E,m):
 	return M
 
 
-def S2AB1(E,m,ring):
+def S2AB1(E,m,DS2AB,ring):
 	p = E.nrows()
 	q = E.ncols()
 	D = E.dict()
 	D1 = {}
-	for k in range(m):
-		for (i,j) in D:
-			D1[(m*i+k,m*j+k)] = D[(i,j)]
-	M = matrix(ring,p*m,q*m,D1,sparse=True)
+	for (i,j) in D:
+		s = DS2AB[i]
+		for k in s:
+			s1 = s.index(k)
+			D1[(k,m*j+s1)] = D[(i,j)]
+	M = matrix(ring,int(p*(m+1)/2),q*m,D1,sparse=True)
 	return M
 
 #A is csr_matrix, removes zero rows and zero columns

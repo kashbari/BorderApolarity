@@ -91,6 +91,7 @@ def HWVGrassmannian(c):
 	H11=PosetHWV.dfs(c[4],LE11,N11,P11,DIMKER)
 	return H22,H30,H03,H00,H11
 
+DS2AB = PosetHWV.DictS2AB(n**2-1)
 
 def AnnPlane(c,dimS2AB,r):
 	H22,H30,H03,H00,H11 = HWVGrassmannian(c)
@@ -104,6 +105,7 @@ def AnnPlane(c,dimS2AB,r):
 		H00.append(None)
 	if len(H11) == 0:
 		H11.append(None)
+	print(c)
 	for z in itertools.product(H22,H30,H03,H00,H11):
 		K = []
 		if z[0] != None:
@@ -136,6 +138,7 @@ def AnnPlane(c,dimS2AB,r):
 			rk = PosetHWV.wvs0(A,dimS2AB,r,n)
 			if dimS2AB -r >= rk:
 				print('Candidate')
+				print(K)
 			else:
 				print('No Candidate')
 		else:
@@ -158,6 +161,7 @@ def AnnPlane(c,dimS2AB,r):
 			bb = PosetHWV.Max(b22+ b30+ b03+ b00 +b11)
 			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
 			print(RING)
+			print(K)
 			G22 = []
 			G30 = []
 			G03 = []
@@ -182,10 +186,12 @@ def AnnPlane(c,dimS2AB,r):
 					if B[j] != None:
 						B[j] = matrix(RING,B[j])
 				B = PosetHWV.shstack(B,RING)
-				B = PosetHWV.COB1(B,n)
-				t = PosetHWV.wvs1(B,dimS2AB,r,n,ring)	
+				B = PosetHWV.COB1(B,n)	
+				t = PosetHWV.wvs1(B,dimS2AB,r,n,RING)	
 				if t == True:
-					print('Candidate')
+					print('Candidate with parameters')
+					print(K)
+					print(g)
 				else:
 					print('No Candidate')
 	return 
