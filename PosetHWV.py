@@ -2,7 +2,8 @@ import numpy as np
 import sympy as sp
 import queue,itertools,math
 import scipy.sparse
-from scipy.sparse import csr_matrix,vstack,hstack
+from scipy.sparse import csr_matrix,vstack,hstack,kron
+from scipy.sparse.linalg import inv
 import BorderApolarity
 import PartialSmithForm
 from collections import deque
@@ -179,6 +180,8 @@ def wvs(T,N,L,LE):
 #use if len(a) == 0
 def wvs0(A,dimS2AB,r,n):
 	B = hstack([a for a in A if a != None])
+	S = COB(n)
+	B = S.dot(B)
 	B = S2AB(B,n**2-1)
 	rk = sms.rank(B)
 	return rk
@@ -187,7 +190,7 @@ def wvs0(A,dimS2AB,r,n):
 def wvs1(A,dimS2AB,r,n,ring):
 	r1 = dimS2AB - r
 	B = S2AB1(A,n**2-1,ring)
-	t = PartialSmithForm.MinRank(B,ring,s,dimS2AB)
+	t = PartialSmithForm.MinRank(B,ring,r1,dimS2AB)
 	return t
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
@@ -238,7 +241,30 @@ def DictS2AB(m):
 			Dict[k] = a + b
 	return Dict
 
-'''
+#M is csr_matrix, 
+def COB(n):
+	row = range(n**2-1)
+	col = range(n**2-1)
+	data = [1]*len(row)
+	for k in range(0,n-1):
+		col.append(k*(n+1))
+		row.append((k+1)*(n+1))
+		data.append(-1)
+	B = csr_matrix((data,(row,col)),shape=(n**2,n**2-1))
+	A = kron(B,B)
+	tA = A.transpose()
+	C = inv(tA.dot(A))
+	S = C.dot(tA)
+	return S
+
+def COB1(B,n):
+	S = COB(n)
+	B = Multiply(S,B)
+	return B
+
+
+
+'''	
 Given E corresponding hyperplane annihilating it, return A* times E
 m = dim sln
 E is csr_matrix

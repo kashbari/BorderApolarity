@@ -182,6 +182,7 @@ def AnnPlane(c,dimS2AB,r):
 					if B[j] != None:
 						B[j] = matrix(RING,B[j])
 				B = PosetHWV.shstack(B,RING)
+				B = PosetHWV.COB1(B,n)
 				t = PosetHWV.wvs1(B,dimS2AB,r,n,ring)	
 				if t == True:
 					print('Candidate')
