@@ -307,7 +307,7 @@ def S2AB1(E,m,DS2AB,ring):
 def trim(A):
 	B = A[A.getnnz(1)>0][:,A.getnnz(0)>0]
 	return B
-
+'''
 #A is matrix over a polynomial ring
 def minRK(A):
 	m = min(A.nrows(),A.ncols())
@@ -328,7 +328,7 @@ def minRK1(A,r):
 	else:
 		t = True
 	return t
-
+'''
 
 
 
