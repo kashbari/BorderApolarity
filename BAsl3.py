@@ -11,7 +11,7 @@ import sys
 from sage.all import *
 
 n = 3
-r  = 14
+r  = 15
 p = r - (n**2-1)
 dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 
@@ -105,7 +105,7 @@ def AnnPlane(c,dimS2AB,r):
 		H00.append(None)
 	if len(H11) == 0:
 		H11.append(None)
-	print(c)
+	print('c is',c)
 	for z in itertools.product(H22,H30,H03,H00,H11):
 		K = []
 		if z[0] != None:
@@ -135,12 +135,13 @@ def AnnPlane(c,dimS2AB,r):
 		A11,a11,b11 = PosetHWV.wvs(K[4],N11,Dict11,LE11)
 		if a22 == a30 == a03 == a00 == a11 == []:
 			A = A22 + A30 + A03 + A00 + A11
-			rk = PosetHWV.wvs0(A,dimS2AB,r,n)
+			rk = PosetHWV.wvs0(A,dimS2AB,r,n,DS2AB)
 			if dimS2AB -r >= rk:
 				print('Candidate')
 				print(K)
 			else:
 				print('No Candidate')
+				print(K)
 		else:
 			A22 = PosetHWV.Convert1(A22)
 			A30 = PosetHWV.Convert1(A30)
@@ -161,7 +162,6 @@ def AnnPlane(c,dimS2AB,r):
 			bb = PosetHWV.Max(b22+ b30+ b03+ b00 +b11)
 			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
 			print(RING)
-			print(K)
 			G22 = []
 			G30 = []
 			G03 = []
@@ -187,13 +187,15 @@ def AnnPlane(c,dimS2AB,r):
 						B[j] = matrix(RING,B[j])
 				B = PosetHWV.shstack(B,RING)
 				B = PosetHWV.COB1(B,n)	
-				t = PosetHWV.wvs1(B,dimS2AB,r,n,RING)	
+				t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)	
 				if t == True:
 					print('Candidate with parameters')
 					print(K)
 					print(g)
 				else:
-					print('No Candidate')
+					print('No Candidate with parameters')
+					print(K)
+					print(g)
 	return 
 
 		
@@ -203,4 +205,24 @@ def AnnPlane(c,dimS2AB,r):
 
 
 
+# Main Code to run
+print('Structure Tensor for sln',n)
+print('r is',r)
+print('Weight Spaces are [2,2],[3,0],[0,3],[0,0],[1,1]')
+print(LE22)
+print(N22)
+print(LE30)
+print(N30)
+print(LE03)
+print(N03)
+print(LE00)
+print(N00)
+print(LE11)
+print(N11)
+print('                    ')
 
+
+
+for c in C:
+	print('NEW COMPOSITION')
+	AnnPlane(c,dimS2AB,r)

@@ -11,7 +11,7 @@ from collections import deque
 import sys
 from sage.all import *
 
-#import sms
+import sms
 
 
 
@@ -179,18 +179,18 @@ def wvs(T,N,L,LE):
 	return A,a,b
 
 #use if len(a) == 0
-def wvs0(A,dimS2AB,r,n):
+def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = hstack([a for a in A if a != None])
 	S = COB(n)
 	B = S.dot(B)
-	B = S2AB(B,n**2-1)
+	B = S2AB(B,n**2-1,DS2AB)
 	rk = sms.rank(B)
 	return rk
 
 #use if len(a) != 0
-def wvs1(A,dimS2AB,r,n,ring):
+def wvs1(A,dimS2AB,r,n,ring,DS2AB):
 	r1 = dimS2AB - r
-	B = S2AB1(A,n**2-1,ring)
+	B = S2AB1(A,n**2-1,DS2AB,ring)
 	#r,B1 = PartialSmithForm.PSmithForm(B,ring)
 	t = PartialSmithForm.MinRank(B,ring,r,dimS2AB)
 	return t
@@ -286,7 +286,7 @@ def S2AB(E,m,DS2AB):
 			J1.extend([m*j+k])
 	for d in list(D):
 		D1.extend([d]*m)
-	M = csr_matrix((D1,(I1,J1)),shape=(p*m,q*m))
+	M = csr_matrix((D1,(I1,J1)),shape=(p*(m+1)/2,q*m))
 	return M
 
 
