@@ -11,7 +11,7 @@ import sys
 from sage.all import *
 
 n = 4
-r  = 25
+r  = input('rank to test:')
 p = r - (n**2-1)
 dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 

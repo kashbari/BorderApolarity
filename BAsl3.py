@@ -11,7 +11,7 @@ import sys
 from sage.all import *
 
 n = 3
-r  = 15
+r  = input('rank to test:')
 p = r - (n**2-1)
 dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 
@@ -221,7 +221,9 @@ print(LE11)
 print(N11)
 print('                    ')
 
-
+import multiprocessing as mp
+pool = mp.Pool(mp.cpu_count())
+results = []
 
 for c in C:
 	print('NEW COMPOSITION')
