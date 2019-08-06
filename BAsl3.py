@@ -93,7 +93,7 @@ def HWVGrassmannian(c):
 
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
-def AnnPlane(c,dimS2AB,r):
+def AnnPlane(c):
 	H22,H30,H03,H00,H11 = HWVGrassmannian(c)
 	if len(H22) == 0:
 		H22.append(None)
@@ -105,126 +105,118 @@ def AnnPlane(c,dimS2AB,r):
 		H00.append(None)
 	if len(H11) == 0:
 		H11.append(None)
-	print('c is',c)
-	for z in itertools.product(H22,H30,H03,H00,H11):
-		K = []
-		if z[0] != None:
-			K.append(list(np.subtract(N22,z[0])))
-		else:
-			K.append(N22)
-		if z[1] != None:
-			K.append(list(np.subtract(N30,z[1])))
-		else:
-			K.append(N30)
-		if z[2] != None:
-			K.append(list(np.subtract(N03,z[2])))
-		else:
-			K.append(N03)
-		if z[3] != None:
-			K.append(list(np.subtract(N00,z[3])))
-		else:
-			K.append(N00)
-		if z[4] != None:
-			K.append(list(np.subtract(N11,z[4])))
-		else:
-			K.append(N11)
-		A22,a22,b22 = PosetHWV.wvs(K[0],N22,Dict22,LE22)
-		A30,a30,b30 = PosetHWV.wvs(K[1],N30,Dict30,LE30)
-		A03,a03,b03 = PosetHWV.wvs(K[2],N03,Dict03,LE03)
-		A00,a00,b00 = PosetHWV.wvs(K[3],N00,Dict00,LE00)
-		A11,a11,b11 = PosetHWV.wvs(K[4],N11,Dict11,LE11)
-		if a22 == a30 == a03 == a00 == a11 == []:
-			A = A22 + A30 + A03 + A00 + A11
-			rk = PosetHWV.wvs0(A,dimS2AB,r,n,DS2AB)
-			if dimS2AB -r >= rk:
-				print('Candidate')
-				print(K)
+	c1 = map(str,c)
+	c1 = ''.join(c1)
+	with open("sl3rk{}.txt".format(c1),'w' as ff:
+		ff.write('c is'+str(c)+'\n')
+		for z in itertools.product(H22,H30,H03,H00,H11):
+			K = []
+			if z[0] != None:
+				K.append(list(np.subtract(N22,z[0])))
 			else:
-				print('No Candidate')
-				print(K)
-		else:
-			A22 = PosetHWV.Convert1(A22)
-			A30 = PosetHWV.Convert1(A30)
-			A03 = PosetHWV.Convert1(A03)
-			A00 = PosetHWV.Convert1(A00)
-			A11 = PosetHWV.Convert1(A11)
-			A = A22 + A30 + A03 + A00 + A11
-			for k in range(len(a30)):
-				a30[k] = a30[k] + len(A22)
-			for k in range(len(a03)):
-				a03[k] = a03[k] + len(A22)+len(A30)
-			for k in range(len(a00)):
-				a00[k] = a00[k] + len(A22)+len(A30)+len(A03)
-			for k in range(len(a11)):
-				a11[k] = a11[k] + len(A22)+len(A30)+len(A03)+len(A00)
-			a = a22+ a30+a03+a00+a11
-			aa = len(a)
-			bb = PosetHWV.Max(b22+ b30+ b03+ b00 +b11)
-			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
-			print(RING)
-			G22 = []
-			G30 = []
-			G03 = []
-			G00 = []
-			G11 = []
-			for k in range(len(a22)):
-				G22.extend([PosetHWV.GrassCharts1(b22[k][0],b22[k][1],RING,k,aa,bb)])
-			for k in range(len(a30)):
-				G30.extend([PosetHWV.GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),aa,bb)])
-			for k in range(len(a03)):
-				G03.extend([PosetHWV.GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),aa,bb)])
-			for k in range(len(a00)):
-				G00.extend([PosetHWV.GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),aa,bb)])
-			for k in range(len(a11)):
-				G11.extend([PosetHWV.GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
-			G = G22 + G30 + G03 + G00 + G11
-			for g in itertools.product(*G):
-				B = A[:]
-				for j in range(len(a)):
-					B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
-				for j in range(len(A)):
-					if B[j] != None:
-						B[j] = matrix(RING,B[j])
-				B = PosetHWV.shstack(B,RING)
-				B = PosetHWV.COB1(B,n)	
-				t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)	
-				if t == True:
-					print('Candidate with parameters')
-					print(K)
-					print(g)
+				K.append(N22)
+			if z[1] != None:
+				K.append(list(np.subtract(N30,z[1])))
+			else:
+				K.append(N30)
+			if z[2] != None:
+				K.append(list(np.subtract(N03,z[2])))
+			else:
+				K.append(N03)
+			if z[3] != None:
+				K.append(list(np.subtract(N00,z[3])))
+			else:
+				K.append(N00)
+			if z[4] != None:
+				K.append(list(np.subtract(N11,z[4])))
+			else:
+				K.append(N11)
+			A22,a22,b22 = PosetHWV.wvs(K[0],N22,Dict22,LE22)
+			A30,a30,b30 = PosetHWV.wvs(K[1],N30,Dict30,LE30)
+			A03,a03,b03 = PosetHWV.wvs(K[2],N03,Dict03,LE03)
+			A00,a00,b00 = PosetHWV.wvs(K[3],N00,Dict00,LE00)
+			A11,a11,b11 = PosetHWV.wvs(K[4],N11,Dict11,LE11)
+			if a22 == a30 == a03 == a00 == a11 == []:
+				A = A22 + A30 + A03 + A00 + A11
+				rk = PosetHWV.wvs0(A,dimS2AB,r,n,DS2AB)
+				if dimS2AB -r >= rk:
+					ff.write('Candidate\n')
+					ff.write(str(K)+'\n')
 				else:
-					print('No Candidate with parameters')
-					print(K)
-					print(g)
+					ff.write('No Candidate\n')
+					ff.write(str(K)+'\n')
+			else:
+				A22 = PosetHWV.Convert1(A22)
+				A30 = PosetHWV.Convert1(A30)
+				A03 = PosetHWV.Convert1(A03)
+				A00 = PosetHWV.Convert1(A00)
+				A11 = PosetHWV.Convert1(A11)
+				A = A22 + A30 + A03 + A00 + A11
+				for k in range(len(a30)):
+					a30[k] = a30[k] + len(A22)
+				for k in range(len(a03)):
+					a03[k] = a03[k] + len(A22)+len(A30)
+				for k in range(len(a00)):
+					a00[k] = a00[k] + len(A22)+len(A30)+len(A03)
+				for k in range(len(a11)):
+					a11[k] = a11[k] + len(A22)+len(A30)+len(A03)+len(A00)
+				a = a22+ a30+a03+a00+a11
+				aa = len(a)
+				bb = PosetHWV.Max(b22+ b30+ b03+ b00 +b11)
+				RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+				ff.write(str(RING)+'\n')
+				G22 = []
+				G30 = []
+				G03 = []
+				G00 = []
+				G11 = []
+				for k in range(len(a22)):
+					G22.extend([PosetHWV.GrassCharts1(b22[k][0],b22[k][1],RING,k,aa,bb)])
+				for k in range(len(a30)):
+					G30.extend([PosetHWV.GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),aa,bb)])
+				for k in range(len(a03)):
+					G03.extend([PosetHWV.GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),aa,bb)])
+				for k in range(len(a00)):
+					G00.extend([PosetHWV.GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),aa,bb)])
+				for k in range(len(a11)):
+					G11.extend([PosetHWV.GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
+				G = G22 + G30 + G03 + G00 + G11
+				for g in itertools.product(*G):
+					B = A[:]
+					for j in range(len(a)):
+						B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
+					for j in range(len(A)):
+						if B[j] != None:
+							B[j] = matrix(RING,B[j])
+					B = PosetHWV.shstack(B,RING)
+					B = PosetHWV.COB1(B,n)	
+					t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)	
+					if t == True:
+						ff.write('Candidate with parameters\n')
+						ff.write(str(K)+'\n')
+						ff.write(str(g)+'\n')
+					else:
+						ff.write('No Candidate with parameters\n')
+						ff.write(str(K)+'\n')
+						ff.write(str(g)+'\n')
 	return 
-
-		
-
-
-
-
-
-
-# Main Code to run
-print('Structure Tensor for sln',n)
-print('r is',r)
-print('Weight Spaces are [2,2],[3,0],[0,3],[0,0],[1,1]')
-print(LE22)
-print(N22)
-print(LE30)
-print(N30)
-print(LE03)
-print(N03)
-print(LE00)
-print(N00)
-print(LE11)
-print(N11)
-print('                    ')
-
-import multiprocessing as mp
-pool = mp.Pool(mp.cpu_count())
-results = []
+'''
 
 for c in C:
-	print('NEW COMPOSITION')
-	AnnPlane(c,dimS2AB,r)
+	AnnPlane(c)
+
+# Main Code to run
+import multiprocessing as mp
+
+pool = mp.Pool(mp.cpu_count())
+
+def main():
+	pool = mp.Pool(mp.cpu_count())
+	result = pool.map(AnnPlane,C)
+
+if __name__=="__main__":
+	main()
+
+'''
+
+
