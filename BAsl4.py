@@ -44,7 +44,7 @@ V000 = csr_matrix((data,(row,col)),shape=(n**4,1))
 row = [3,23,43,48,53,58,63,83,113,163,178,243]
 col = [0]*len(row)
 data = [8,16,16,8,-8,-8,8,-8,16,-8,16,8]
-V101 = csr_matrix((data,(row,col),shape=(n**4,1))
+V101 = csr_matrix((data,(row,col)),shape=(n**4,1))
 
 
 
@@ -90,7 +90,7 @@ C1 = [len(LE202),len(LE210),len(LE012),len(LE020),len(LE000),len(LE101)]
 C = [c for c in BorderApolarity.findComp(p,6) if all( i >= 0 for i in np.subtract(C1,c))]
 
 
-def HWVGrassmannianG(c):
+def HWVGrassmannian(c):
 	H202=PosetHWV.dfs(c[0],LE202,N202,P202,DIMKER)
 	H210=PosetHWV.dfs(c[1],LE210,N210,P210,DIMKER)
 	H012=PosetHWV.dfs(c[2],LE012,N012,P012,DIMKER)
@@ -101,7 +101,7 @@ def HWVGrassmannianG(c):
 
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
-def AnnPlaneG(c,dimS2AB,r):
+def AnnPlane(c):
 	H202,H210,H012,H020,H000,H101 = HWVGrassmannian(c)
 	if len(H202) == 0:
 		H202.append(None)
@@ -221,7 +221,6 @@ def AnnPlaneG(c,dimS2AB,r):
 						ff.write(str(K)+'\n')
 						ff.write(str(g)+'\n')
 	return 
-
 
 # Main Code to run
 import multiprocessing as mp
