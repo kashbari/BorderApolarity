@@ -205,6 +205,7 @@ def AnnPlane(c):
 for c in C:
 	AnnPlane(c)
 
+'''
 # Main Code to run
 import multiprocessing as mp
 
@@ -214,7 +215,5 @@ def main():
 
 if __name__=="__main__":
 	main()
-
-'''
 
 

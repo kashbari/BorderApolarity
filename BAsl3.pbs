@@ -1,11 +1,12 @@
 #SLURM -N 8
-#SLURM --mem=
+#SLURM --mem=4000
 #SLURM --time=03:00:00
+--output=/data/scratch/kashbari/
 #SLURM -p night
 
 cd $HOME/src/tmp
 
-mpi run -np 8 ./BAsl3.py -j 1 -f outfile.lis <<EOT
+mpi run -np 8 ./BAsl3.py <<EOT
 15
 EOT
 exit 0
