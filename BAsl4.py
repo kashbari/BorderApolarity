@@ -210,7 +210,8 @@ def AnnPlane(c):
 						if B[j] != None:
 							B[j] = matrix(RING,B[j])
 					B = PosetHWV.shstack(B,RING)
-					B = PosetHWV.COB1(B,n)	
+					B = PosetHWV.COB1(B,n)
+					print(B.nrows(),B.ncols())	
 					t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)	
 					if t == True:
 						ff.write('CANDIDATE with parameters\n')
@@ -222,7 +223,9 @@ def AnnPlane(c):
 						ff.write(str(g)+'\n')
 	return 
 
-# Main Code to run
+
+'''
+# Main Code to run- Local Parallel Processing (8 cpu)
 import multiprocessing as mp
 
 def main():
@@ -232,4 +235,6 @@ def main():
 if __name__=="__main__":
         main()
 
-
+# Main Code to run- SLURM
+AnnPlane(C[int(sys.argv[1])])
+'''

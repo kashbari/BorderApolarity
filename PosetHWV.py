@@ -191,6 +191,7 @@ def wvs0(A,dimS2AB,r,n,DS2AB):
 def wvs1(A,dimS2AB,r,n,ring,DS2AB):
 	r1 = dimS2AB - r
 	B = S2AB1(A,n**2-1,DS2AB,ring)
+	print(B.nrows(),B.ncols())
 	#r,B1 = PartialSmithForm.PSmithForm(B,ring)
 	t = PartialSmithForm.MinRank(B,ring,r,dimS2AB)
 	return t

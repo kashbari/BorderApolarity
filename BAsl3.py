@@ -164,7 +164,7 @@ def AnnPlane(c):
 				aa = len(a)
 				bb = PosetHWV.Max(b22+ b30+ b03+ b00 +b11)
 				RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
-				ff.write(str(RING)+'\n')
+				print(RING)
 				G22 = []
 				G30 = []
 				G03 = []
@@ -181,7 +181,20 @@ def AnnPlane(c):
 				for k in range(len(a11)):
 					G11.extend([PosetHWV.GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
 				G = G22 + G30 + G03 + G00 + G11
+				print('The G22,G03,...,G11 are')
+				print(b22)
+				print(G22)
+				print(b30)
+				print(G30)
+				print(b03)
+				print(G03)
+				print(b00)
+				print(G00)
+				print(b11)
+				print(G11)
+				print('The products are')
 				for g in itertools.product(*G):
+					print(g)
 					B = A[:]
 					for j in range(len(a)):
 						B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
@@ -189,7 +202,8 @@ def AnnPlane(c):
 						if B[j] != None:
 							B[j] = matrix(RING,B[j])
 					B = PosetHWV.shstack(B,RING)
-					B = PosetHWV.COB1(B,n)	
+					B = PosetHWV.COB1(B,n)
+					print(B.nrows(),B.ncols())	
 					t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)	
 					if t == True:
 						ff.write('Candidate with parameters\n')
@@ -201,12 +215,11 @@ def AnnPlane(c):
 						ff.write(str(g)+'\n')
 	return 
 '''
-
+# Main Code to run- In Series
 for c in C:
 	AnnPlane(c)
 
-'''
-# Main Code to run
+# Main Code to run- Parallel Computing over 8 processors
 import multiprocessing as mp
 
 def main():
@@ -216,4 +229,7 @@ def main():
 if __name__=="__main__":
 	main()
 
+# Main Code to run- SLURM!
+AnnPlane(C[int(sys.argv[1])])
+'''
 
