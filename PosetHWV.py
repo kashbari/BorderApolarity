@@ -139,12 +139,12 @@ def Max(b):
 	return m
 #R = PolynomialRing(QQ, (n-k)*k,x)
 
-def GrassCharts(k,n,pivots,ring,q,aa,bb):
+def GrassCharts(k,n,pivots,ring,q,bb):
 	assert len(pivots) == k and sorted(pivots) == list(pivots)
-	M = matrix(ring,k,n)
+	M = Matrix(ring,k,n)
 	taken = []
 	for (row,pivot) in enumerate(pivots):
-		M[row,pivots] = 1
+		M[row,pivot] = 1
 		taken.extend((i,pivot) for i in range(k))
 		taken.extend((row,j) for j in range(pivot))
 	indet_indices = [(i,j) for i in range(k) for j in range(n) if not (i,j) in taken]
@@ -153,10 +153,10 @@ def GrassCharts(k,n,pivots,ring,q,aa,bb):
 	return M
 
 
-def GrassCharts1(k,n,ring,q,aa,bb):
+def GrassCharts1(k,n,ring,q,bb):
 	A = []
 	for pivots in itertools.combinations(range(n),k):
-		A.extend(GrassCharts(k,n,pivots,ring,q,aa,bb))
+		A.append(matrix(GrassCharts(k,n,pivots,ring,q,bb)))
 	return A 
 
 

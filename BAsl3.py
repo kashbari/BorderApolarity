@@ -10,6 +10,8 @@ from collections import deque
 import sys
 from sage.all import *
 
+import time
+
 n = 3
 r  = input('rank to test:')
 p = r - (n**2-1)
@@ -171,15 +173,15 @@ def AnnPlane(c):
 				G00 = []
 				G11 = []
 				for k in range(len(a22)):
-					G22.extend([PosetHWV.GrassCharts1(b22[k][0],b22[k][1],RING,k,aa,bb)])
+					G22.extend([PosetHWV.GrassCharts1(b22[k][0],b22[k][1],RING,k,bb)])
 				for k in range(len(a30)):
-					G30.extend([PosetHWV.GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),aa,bb)])
+					G30.extend([PosetHWV.GrassCharts1(b30[k][0],b30[k][1],RING,k+len(a22),bb)])
 				for k in range(len(a03)):
-					G03.extend([PosetHWV.GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),aa,bb)])
+					G03.extend([PosetHWV.GrassCharts1(b03[k][0],b03[k][1],RING,k+len(a22+a30),bb)])
 				for k in range(len(a00)):
-					G00.extend([PosetHWV.GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),aa,bb)])
+					G00.extend([PosetHWV.GrassCharts1(b00[k][0],b00[k][1],RING,k+len(a22+a30+a03),bb)])
 				for k in range(len(a11)):
-					G11.extend([PosetHWV.GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),aa,bb)])
+					G11.extend([PosetHWV.GrassCharts1(b11[k][0],b11[k][1],RING,k+len(a22+a30+a03+a00),bb)])
 				G = G22 + G30 + G03 + G00 + G11
 				print('The G22,G03,...,G11 are')
 				print(b22)
