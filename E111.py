@@ -13,26 +13,64 @@ def Sep1(D,k,m):
 	for d in D:
 		k0 = int(math.floor(d[0]/k))
 		k1 = d[0]%k
-		if k0 != 0
+		print(d)
+		if k0 != 0:
 			D[(k*m*k0+k1,d[1])] = D[d]
-			del D[d]
-		return D
+			print((k*m*k0+k1,d[1]))
+			D.pop(d)
+			print(len(D))
+	return D
 
 def Shft1(D,k,m):
-
+	return D
 
 #Want X in matrix format
 def E110(X,m):
 	if type(X) == csr_matrix:
 		X = csr2matsage(X)
-	else:
-		X = X
 	X1 = kron(identity(m),X)
 	return X1
 
 
 def E101(X,m):
-
-
+	if type(X) == csr_matrix:
+		X = csr2matsage(X)
+	D = X.dict()
+	D = Sep1(D,m,m)
+	D = Shft1(D,m,m)
+	X1 = matrix(m**3,m*X.ncols(),D,sparse=True)
+	return X1
 
 def E011(X,m):
+	if type(X) == csr_matrix:
+		X = csr2matsage(X)
+	D = Sep1(D,1,m)
+        D = Shft1(D,1,m)
+        X1 = matrix(m**3,m*X.ncols(),D,sparse=True)
+	return X1
+
+def E111(X,Y,Z,m):
+	X1 = E110(X,m)
+	Y1 = E101(Y,m)
+	Z1 = E011(Z,m)
+	DX = X1.dict()
+	DY = Y1.dict()
+	DZ = Z1.dict()
+	ycol = X1.ncols()
+	zcol = X1.ncols()+Y1.ycols()
+	for d in DY:
+		DY[(d[0],d[1]+ycol)] = DY[d]
+		del DY[d]
+	for d in DZ:
+		DZ[(d[0],d[1]+zcol)] = DZ[d]
+		del DZ[d] 
+	D = DX|DY|DZ
+	cols = X1.ncols()+Y1.ncols()+Z1.ncols()
+	rows = X1.nrows()+Y1.nrows()+Z1.nrows()
+	M = matrix(rows,cols,D,sparse=True)
+	return M
+
+
+	
+	
+
