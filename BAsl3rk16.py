@@ -13,7 +13,7 @@ from sage.all import *
 import time
 
 n = 3
-r  = input('rank to test:')
+r  = 16
 p = r - (n**2-1)
 dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 
@@ -50,8 +50,8 @@ V11 = csr_matrix((data,(row,col)),shape=(n**4,1))
 
 
 LowOps = [BorderApolarity.SparseMatLowOp(i,n) for i in range(n-1)]
-C = CartanMatrix(['A',n-1])
-Cinv = np.linalg.inv(C)
+Ca = CartanMatrix(['A',n-1])
+Cinv = np.linalg.inv(Ca)
 f = lambda x,y: all(i >= 0 for i in map(int,round(Cinv.dot(np.subtract(y,x)))))
 
 
@@ -109,7 +109,7 @@ def AnnPlane(c):
 		H11.append(None)
 	c1 = map(str,c)
 	c1 = ''.join(c1)
-	with open("/sl3rk16/sl3rk{}.txt".format(c1),'w') as ff:
+	with open("sl3rk16/sl3rk{}.txt".format(c1),'w') as ff:
 		ff.write('c is'+str(c)+'\n')
 		for z in itertools.product(H22,H30,H03,H00,H11):
 			K = []
@@ -142,10 +142,10 @@ def AnnPlane(c):
 				A = A22 + A30 + A03 + A00 + A11
 				rk = PosetHWV.wvs0(A,dimS2AB,r,n,DS2AB)
 				if dimS2AB -r >= rk:
-					ff.write('Candidate\n')
+					ff.write('CANDIDATE\n')
 					ff.write(str(K)+'\n')
 				else:
-					ff.write('No Candidate\n')
+					ff.write('Nope!\n')
 					ff.write(str(K)+'\n')
 			else:
 				A22 = PosetHWV.Convert1(A22)
@@ -208,11 +208,11 @@ def AnnPlane(c):
 					print(B.nrows(),B.ncols())	
 					t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)	
 					if t == True:
-						ff.write('Candidate with parameters\n')
+						ff.write('CANDIDATE with parameters\n')
 						ff.write(str(K)+'\n')
 						ff.write(str(g)+'\n')
 					else:
-						ff.write('No Candidate with parameters\n')
+						ff.write('Nope! w/ p\n')
 						ff.write(str(K)+'\n')
 						ff.write(str(g)+'\n')
 	return 
@@ -220,7 +220,7 @@ def AnnPlane(c):
 # Main Code to run- In Series
 for c in C:
 	AnnPlane(c)
-'''
+
 # Main Code to run- Parallel Computing over 8 processors
 import multiprocessing as mp
 
@@ -230,7 +230,7 @@ def main():
 
 if __name__=="__main__":
 	main()
-'''
+
 # Main Code to run- SLURM!
 AnnPlane(C[int(sys.argv[1])])
 '''
