@@ -6,6 +6,7 @@ from scipy.sparse import csr_matrix,vstack,hstack,kron
 from scipy.sparse.linalg import inv
 import BorderApolarity
 import PartialSmithForm
+import E111
 from collections import deque
 
 import sys
@@ -186,6 +187,16 @@ def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = S2AB(B,n**2-1,DS2AB)
 	rk = sms.rank(B)
 	return rk
+
+def wvs01(A,dimS2AB,r,n,DS2AB):
+	B = hstack([a for a in A if a != None])
+	S = COB(n)
+	B = S.dot(B)
+	B = S2AB(B,n**2-1,DS2AB)
+	B1 = E111.csr2matsage(B)
+	rk = B1.rank()
+	return rk
+
 
 #use if len(a) != 0
 def wvs1(A,dimS2AB,r,n,ring,DS2AB):

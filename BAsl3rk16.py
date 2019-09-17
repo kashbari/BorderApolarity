@@ -109,7 +109,7 @@ def AnnPlane(c):
 		H11.append(None)
 	c1 = map(str,c)
 	c1 = ''.join(c1)
-	with open("sl3rk16/sl3rk{}.txt".format(c1),'w') as ff:
+	with open("sl3rk16/sl3pt{}.txt".format(c1),'w') as ff:
 		ff.write('c is'+str(c)+'\n')
 		for z in itertools.product(H22,H30,H03,H00,H11):
 			K = []
