@@ -187,6 +187,22 @@ def wvs0(A,dimS2AB,r,n,DS2AB):
 	rk = sms.rank(B)
 	return rk
 
+def csr2matsage(X):
+	I,J,K = scipy.sparse.find(X)
+	dat = {(i,j):v for i,j,v in zip(I,J,K)}
+	X1 = matrix(X.shape[0],X.shape[1],dat,sparse=True)
+	return X1
+
+def wvs01(A,dimS2AB,r,n,DS2AB):
+	B = hstack([a for a in A if a != None])
+	S = COB(n)
+	B = S.dot(B)
+	B = S2AB(B,n**2-1,DS2AB)
+	B1 = csr2matsage(B)
+	type(B1)
+	rk = B1.rank()
+	return rk
+
 #use if len(a) != 0
 def wvs1(A,dimS2AB,r,n,ring,DS2AB):
 	r1 = dimS2AB - r

@@ -1,6 +1,10 @@
 import numpy as np
+import scipy.sparse
 import math
 from scipy.sparse import csr_matrix,identity
+
+import sys
+from sage.all import *
 
 #X is m^2 by m^2-r, with so write in basis for A*B*C* (m^3), so want m^3 by m*(m^2-r)
 def csr2matsage(X):
