@@ -1,0 +1,433 @@
+slurmstepd: error: Could not run slurm task_prolog [/data/slurm/bin/taskprolog]: Permission denied
+/usr/local/SageMath/local/lib/python2.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:243: SparseEfficiencyWarning: splu requires CSC matrix format
+  warn('splu requires CSC matrix format', SparseEfficiencyWarning)
+/usr/local/SageMath/local/lib/python2.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:161: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+  'is in the CSC matrix format', SparseEfficiencyWarning)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Multivariate Polynomial Ring in x_00, x_10 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2), (1, 2)]
+[[[   1 x_00], [0 1]], [[   1 x_10], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00], [   1 x_10])
+(64, 48)
+(288, 384)
+([   1 x_00], [0 1])
+(64, 48)
+(288, 384)
+([0 1], [   1 x_10])
+(64, 48)
+(288, 384)
+([0 1], [0 1])
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)
+Univariate Polynomial Ring in x_00 over Rational Field
+The G22,G03,...,G11 are
+[(1, 2)]
+[[[   1 x_00], [0 1]]]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+The products are
+([   1 x_00],)
+(64, 48)
+(288, 384)
+([0 1],)
+(64, 48)
+(288, 384)

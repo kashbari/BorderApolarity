@@ -12,7 +12,7 @@ from collections import deque
 import sys
 from sage.all import *
 
-import sms
+#import sms
 
 
 
@@ -178,7 +178,7 @@ def wvs(T,N,L,LE):
 			else:
 				A.append(None)
 	return A,a,b
-
+'''
 #use if len(a) == 0
 def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = hstack([a for a in A if a != None])
@@ -187,6 +187,7 @@ def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = S2AB(B,n**2-1,DS2AB)
 	rk = sms.rank(B)
 	return rk
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 def csr2matsage(X):
@@ -197,24 +198,24 @@ def csr2matsage(X):
 
 =======
 >>>>>>> 6b0a6e4f3dc18aee7972446ce687a8b78ed64da3
+=======
+'''
 def wvs01(A,dimS2AB,r,n,DS2AB):
 	B = hstack([a for a in A if a != None])
 	S = COB(n)
 	B = S.dot(B)
 	B = S2AB(B,n**2-1,DS2AB)
-<<<<<<< HEAD
-	B1 = csr2matsage(B)
-	type(B1)
-	rk = B1.rank()
-	return rk
-
-=======
 	B1 = E111.csr2matsage(B)
 	rk = B1.rank()
-	return rk
 
+def wvs01M(A,dimS2AB,r,n,DS2AB):
+	B = hstack([a for a in A if a != None])
+	S = COB(n)
+	B = S.dot(B)
+	B = S2AB(B,n**2-1,DS2AB)
+	B1 = E111.csr2matsage(B)
+	return B1
 
->>>>>>> 6b0a6e4f3dc18aee7972446ce687a8b78ed64da3
 #use if len(a) != 0
 def wvs1(A,dimS2AB,r,n,ring,DS2AB):
 	r1 = dimS2AB - r
@@ -223,6 +224,10 @@ def wvs1(A,dimS2AB,r,n,ring,DS2AB):
 	#r,B1 = PartialSmithForm.PSmithForm(B,ring)
 	t = PartialSmithForm.MinRank(B,ring,r,dimS2AB)
 	return t
+
+def wvs1M(A,dimS2AB,r,n,ring,DS2AB):
+	B = S2AB1(A,n**2-1,DS2AB,ring)
+	return B
 
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
