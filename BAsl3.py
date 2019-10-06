@@ -220,7 +220,7 @@ def AnnPlane(c):
 # Main Code to run- In Series
 for c in C:
 	AnnPlane(c)
-'''
+
 # Main Code to run- Parallel Computing over 8 processors
 import multiprocessing as mp
 
@@ -230,7 +230,7 @@ def main():
 
 if __name__=="__main__":
 	main()
-'''
+
 # Main Code to run- SLURM!
 AnnPlane(C[int(sys.argv[1])])
 '''

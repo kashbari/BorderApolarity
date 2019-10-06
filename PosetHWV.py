@@ -133,8 +133,8 @@ def dfs(p,LE,NN,P,DIMKER):
 def Max(b):
 	m = 0
 	for i in range(len(b)):
-		if b[i][1]-b[i][0] > m:
-			m = b[i][1]-b[i][0]
+		if b[i][0]*(b[i][1]-b[i][0]) > m:
+			m = b[i][0]*(b[i][1]-b[i][0])
 		else:
 			m = m
 	return m
@@ -184,6 +184,7 @@ def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = hstack([a for a in A if a != None])
 	S = COB(n)
 	B = S.dot(B)
+	print(B.shape)
 	B = S2AB(B,n**2-1,DS2AB)
 	rk = sms.rank(B)
 	return rk
@@ -206,6 +207,22 @@ def wvs1(A,dimS2AB,r,n,ring,DS2AB):
 	#r,B1 = PartialSmithForm.PSmithForm(B,ring)
 	t = PartialSmithForm.MinRank(B,ring,r,dimS2AB)
 	return t
+
+#COMBINE DICTIONARIES FOR POSET; D is list of Dictionaries
+def Combine(Dict1,LE1,N1,ListofDic):
+	for D in ListofDic:
+		assert type(D) == dict
+		for d in D:
+			if d in Dict1:
+				Dict1[d] = hstack([Dict1[d],D[d]])
+			else:
+				Dict1[d] = D[d]
+	for d in LE1:
+		N1[LE1.index(d)] = Dict1[d].shape[1]
+	return Dict1,N1 
+			
+				
+
 
 #Convert from csr_matrix to sage sparse matrix
 def Convert(A):
