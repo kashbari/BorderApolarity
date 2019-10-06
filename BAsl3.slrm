@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem=3820
 #SBATCH -O
-#SBATCH --output=/data/scratch/kbari/sl3rk16/sl3rk16_%A_%a.out
-#SBATCH --arracy=0-len(C)
+#SBATCH --output=/data/scratch/kbari/sl3rkN/sl3rkN_%A_%a.out
+#SBATCH --array=0-len(C)
 
-sage /data/scratch/kbari/BAsl3rk16.py $SLURM_ARRAY_TASK_ID
+sage /data/scratch/kbari/BAsl3rkN.py $SLURM_ARRAY_TASK_ID

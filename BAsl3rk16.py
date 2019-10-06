@@ -139,7 +139,7 @@ def AnnPlane(c):
 			A11,a11,b11 = PosetHWV.wvs(K[4],N11,Dict11,LE11)
 			if a22 == a30 == a03 == a00 == a11 == []:
 				A = A22 + A30 + A03 + A00 + A11
-				rk = PosetHWV.wvs0(A,dimS2AB,r,n,DS2AB)
+				rk = PosetHWV.wvs01(A,dimS2AB,r,n,DS2AB)
 				if dimS2AB -r >= rk:
 					ff.write('CANDIDATE\n')
 					ff.write(str(K)+'\n')
@@ -228,7 +228,11 @@ def main():
 
 if __name__=="__main__":
 	main()
+<<<<<<< HEAD
+=======
+'''
+
+>>>>>>> 08a678e118165f74ec44e14879095361d1c1295f
 # Main Code to run- SLURM!
 AnnPlane(C[int(sys.argv[1])])
-'''
 

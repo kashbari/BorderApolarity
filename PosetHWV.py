@@ -12,7 +12,7 @@ from collections import deque
 import sys
 from sage.all import *
 
-import sms
+#import sms
 
 
 
@@ -178,7 +178,7 @@ def wvs(T,N,L,LE):
 			else:
 				A.append(None)
 	return A,a,b
-
+'''
 #use if len(a) == 0
 def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = hstack([a for a in A if a != None])
@@ -188,7 +188,7 @@ def wvs0(A,dimS2AB,r,n,DS2AB):
 	B = S2AB(B,n**2-1,DS2AB)
 	rk = sms.rank(B)
 	return rk
-
+'''
 def wvs01(A,dimS2AB,r,n,DS2AB):
 	B = hstack([a for a in A if a != None])
 	S = COB(n)
