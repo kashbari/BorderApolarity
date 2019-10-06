@@ -74,7 +74,6 @@ Dict00,LE00,P00,N00 = WeightPoset(V00,LowOps,f)
 
 Dict11,LE11,P11,N11 = WeightPoset(V11,LowOps,f)
 
-
 #precomputed
 DIMKER = {}
 DIMKER[(0,)] = 35
@@ -220,7 +219,6 @@ def AnnPlane(c):
 # Main Code to run- In Series
 for c in C:
 	AnnPlane(c)
-
 # Main Code to run- Parallel Computing over 8 processors
 import multiprocessing as mp
 
@@ -230,8 +228,11 @@ def main():
 
 if __name__=="__main__":
 	main()
+<<<<<<< HEAD
+=======
 '''
 
+>>>>>>> 08a678e118165f74ec44e14879095361d1c1295f
 # Main Code to run- SLURM!
 AnnPlane(C[int(sys.argv[1])])
 
