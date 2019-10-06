@@ -13,7 +13,7 @@ from sage.all import *
 import time
 
 n = 3
-r  = 15
+r  = 14
 p = r - (n**2-1)
 dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 
@@ -91,7 +91,7 @@ DS2AB = PosetHWV.DictS2AB(n**2-1)
 
 def AnnPlane0(h):
 	q = H.index(h)
-	with open("sl3rk15/sl3rk15hwvgr{}.txt".format(q),'w') as ff:
+	with open("sl3rk14/sl3rk14hwvgr{}.txt".format(q),'w') as ff:
 		ff.write('h is'+str(h)+'\n')
 		K = list(np.subtract(N,h))
 		A,a,b = PosetHWV.wvs(K,N,Dict,LE)
