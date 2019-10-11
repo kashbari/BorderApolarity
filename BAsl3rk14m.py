@@ -89,6 +89,82 @@ H = PosetHWV.dfs(p,LE,N,P,DIMKER)
 
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
+
+def HwithGrassCharts(H):
+	H1 = []
+	for h in H:
+		K = list(np.subtract(N,h))
+		A,a,b = PosetHWV.wvs(K,N,Dict,LE)
+		if a == []:
+			H1.append((h,None))
+		else:
+			aa = len(a)
+			bb = PosetHWV.Max(b)
+			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+			G = []
+			for k in range(aa):
+				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
+				for g in itertools.product(*G):
+					H1.append((h,g))
+		return H1
+
+H1 = HwithGrassCharts(H)
+
+
+def AnnPlane1(h):
+	q = H1.index(h)
+	with open("sl3rk14/sl3rk14hwvgr{}.txt".format(q),'w') as ff:
+                ff.write('h is'+str(h)+'\n')
+                K = list(np.subtract(N,h))
+                A,a,b = PosetHWV.wvs(K,N,Dict,LE)
+		print(A)
+                print(a)
+                print(b)
+		g = h[1]
+                if g == None:
+                        rk = PosetHWV.wvs01(A,dimS2AB,r,n,DS2AB)
+                        if dimS2AB-r >= rk:
+                                ff.write('CANDIDATE\n')
+                                ff.write(str(K)+'\n')
+                        else:
+                                ff.write('Nope!\n')
+                                ff.write(str(K)+'\n')
+		else:
+			A = PosetHWV.Convert1(A)
+                        aa = len(a)
+                        bb = PosetHWV.Max(b)
+                        print('aa and bb are')
+                        print(aa)
+                        print(bb)
+                        RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+                        print(RING)
+			print(g)
+			B = A[:]
+			for j in range(len(a)):
+				print(B[a[j]].nrows(),B[a[j]].ncols())
+				print(g[j])
+				B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
+			for j in range(len(A)):
+				if B[j] != None:
+					B[j] = matrix(RING,B[j])
+			B = PosetHWV.shstack(B,RING)
+			B = PosetHWV.COB1(B,n)
+			print(B.nrows(),B.ncols())      
+			t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)     
+			if t == True:
+				ff.write('CANDIDATE with parameters\n')
+				ff.write(str(K)+'\n')
+				ff.write(str(g)+'\n')
+			else:
+				ff.write('Nope! w/ p\n')
+				ff.write(str(K)+'\n')
+				ff.write(str(g)+'\n')
+	return
+
+
+
+
+'''
 def AnnPlane0(h):
 	q = H.index(h)
 	with open("sl3rk14/sl3rk14hwvgr{}.txt".format(q),'w') as ff:
@@ -144,7 +220,7 @@ def AnnPlane0(h):
 					ff.write(str(K)+'\n')
 					ff.write(str(g)+'\n')
 	return 
-'''
+
 # Main Code to run- In Series
 for c in C:
 	AnnPlane(c)
@@ -159,6 +235,6 @@ if __name__=="__main__":
 	main()
 '''
 # Main Code to run- SLURM!
-AnnPlane0(H[int(sys.argv[1])])
+AnnPlane1(H1[int(sys.argv[1])])
 
 

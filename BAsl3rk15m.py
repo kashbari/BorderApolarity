@@ -157,8 +157,7 @@ def main():
 
 if __name__=="__main__":
 	main()
-
+'''
 # Main Code to run- SLURM!
 AnnPlane0(H[int(sys.argv[1])])
-'''
 

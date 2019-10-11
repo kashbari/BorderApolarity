@@ -1,0 +1,6 @@
+slurmstepd: error: Could not run slurm task_prolog [/data/slurm/bin/taskprolog]: Permission denied
+/usr/local/SageMath/local/lib/python2.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:243: SparseEfficiencyWarning: splu requires CSC matrix format
+  warn('splu requires CSC matrix format', SparseEfficiencyWarning)
+/usr/local/SageMath/local/lib/python2.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:161: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+  'is in the CSC matrix format', SparseEfficiencyWarning)
+slurmstepd: error: *** JOB 601415 ON bloc128-05 CANCELLED AT 2019-10-06T08:24:31 DUE TO TIME LIMIT ***

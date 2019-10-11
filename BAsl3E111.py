@@ -95,7 +95,7 @@ def HWVGrassmannian(c):
 
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
-
+H = PosetHWV.dfs(p,LE,N,P,DIMKER)
 
 def PreE111(K,g,variable):
 	A22,a22,b22 = PosetHWV.wvs(K[0],N22,Dict22,LE22)
