@@ -75,9 +75,10 @@ Dict00,LE00,P00,N00 = WeightPoset(V00,LowOps,f)
 Dict11,LE11,P11,N11 = WeightPoset(V11,LowOps,f)
 
 
-Dict,N = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11]) 
-P = P22
-LE = LE22
+Dict22,N22 = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11]) 
+Dict30,N30 = PosetHWV.Combine(Dict30,LE30,N30,[Dict00,Dict11])
+Dict03,N03 = PosetHWV.Combine(Dict03,LE03,N03,[Dict00,Dict11])
+Dict11,N11 = PosetHWV.Combine(Dict11,LE11,N03,[Dict00])
 
 #precomputed
 DIMKER = {}
@@ -85,12 +86,15 @@ DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
 
-H = PosetHWV.dfs(p,LE,N,P,DIMKER)
+H22 = PosetHWV.dfs(p,LE22,N22,P22,DIMKER)
+H30 = PosetHWV.dfs(p,LE30,N30,P30,DIMKER)
+H03 = PosetHWV.dfs(p,LE03,N03,P03,DIMKER)
+H11 = PosetHWV.dfs(p,LE11,N11,P11,DIMKER)
 
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
 
-def HwithGrassCharts(H):
+def HwithGrassCharts(H,N,Dict,LE):
 	H1 = []
 	for h in H:
 		K = list(np.subtract(N,h))
@@ -108,11 +112,15 @@ def HwithGrassCharts(H):
 					H1.append((h,g))
 		return H1
 
-H1 = HwithGrassCharts(H)
+H22 = HwithGrassCharts(H22,N22,Dict22,LE22)
+H30 = HwithGrassCharts(H30,N30,Dict30,LE30)
+H03 = HwithGrassCharts(H03,N03,Dict03,LE03)
+H11 = HwithGrassCharts(H11,N11,Dict11,LE11)
 
+H = H22+H30+H03+H11
 
 def AnnPlane1(h):
-	q = H1.index(h)
+	q = H.index(h)
 	with open("sl3rk14/sl3rk14hwvgr{}.txt".format(q),'w') as ff:
                 ff.write('h is'+str(h)+'\n')
                 K = list(np.subtract(N,h))
