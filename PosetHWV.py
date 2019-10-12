@@ -101,11 +101,19 @@ def SUM(q):
 		S += q[k]
 	return S
 
-def dfs(p,LE,NN,P,DIMKER):
+def startdfs(S,q):
+	S1 = []
+	for s in S:
+		q1 = [0]*q
+		q1[s] = 1
+		S1.extend([q1])
+	return S1
+
+
+def dfs(p,S,LE,NN,P,DIMKER):
 	Hwvs = []
-	q = [1]
-	q.extend([0]*(len(LE)-1))
-	Stack = deque([q])
+	S1 = startdfs(S,len(LE))
+	Stack = deque(S1)
 	while len(Stack) != 0:
 		s = Stack.pop()
 		if SUM(s) == p:
