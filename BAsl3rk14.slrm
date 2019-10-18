@@ -1,9 +1,10 @@
 #!/bin/bash
-#SBATCH --time=11:59:00
+#SBATCH -q weekend
+#SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=3820
 #SBATCH -O
-#SBATCH --output=/data/scratch/kbari/BorderApolarity/sl3rk14/sl3rk14_%A_%a.out
-#SBATCH --array=0-175
+#SBATCH --output=/data/scratch/kbari/BorderApolarity/sl3rk14m/sl3rk14_%A_%a.out
+#SBATCH --array=0-9750
 
 HOME=/data/scratch/kbari sage --nodotsage /data/scratch/kbari/BorderApolarity/BAsl3rk14m.py $SLURM_ARRAY_TASK_ID
