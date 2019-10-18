@@ -1,0 +1,5 @@
+slurmstepd: error: Could not run slurm task_prolog [/data/slurm/bin/taskprolog]: Permission denied
+Traceback (most recent call last):
+  File "/data/scratch/kbari/BorderApolarity/BAsl3rk14m.py", line 239, in <module>
+    AnnPlane1(H[int(sys.argv[1])])
+IndexError: list index out of range
