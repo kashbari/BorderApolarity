@@ -1,5 +1,0 @@
-slurmstepd: error: Could not run slurm task_prolog [/data/slurm/bin/taskprolog]: Permission denied
-Traceback (most recent call last):
-  File "/data/scratch/kbari/BorderApolarity/BAsl3rk14m.py", line 88, in <module>
-    H1 = PosetHWV.dfs(p,LE,N,P,DIMKER)
-TypeError: dfs() takes exactly 6 arguments (5 given)
