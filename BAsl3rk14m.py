@@ -85,7 +85,9 @@ DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
 
-H1 = PosetHWV.dfs(p,LE,N,P,DIMKER)
+S = [0,1,3,4]
+
+H1 = PosetHWV.dfs(p,S,LE,N,P,DIMKER)
 
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
@@ -106,7 +108,7 @@ def HwithGrassCharts(H):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
 				for g in itertools.product(*G):
 					H1.append((h,g))
-		return H1
+	return H1
 
 H = HwithGrassCharts(H1)
 
@@ -232,8 +234,7 @@ def main():
 
 if __name__=="__main__":
 	main()
-'''
 # Main Code to run- SLURM!
 AnnPlane1(H[int(sys.argv[1])])
-
+'''
 
