@@ -7,9 +7,6 @@ import scipy
 import sys
 from sage.all import *
 
-import sys
-from sage.all import *
-
 #X is m^2 by m^2-r, with so write in basis for A*B*C* (m^3), so want m^3 by m*(m^2-r)
 def csr2matsage(X):
 	I,J,K = scipy.sparse.find(X)
