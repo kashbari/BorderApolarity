@@ -111,6 +111,14 @@ def cond(K,i,LE,P,DIMKER):
 			else:
 				Test = False
 	return Test
+
+def firstnonzero(r):
+	I = [index for index,item in enumerate(r) if item != 0][-1]
+	if I == 1 :
+		return True
+	else:
+		return False
+
 def SUM(q):
 	S= 0
 	for k in range(len(q)):
@@ -128,30 +136,37 @@ def startdfs(S,q):
 
 def dfs(p,LE,NN,P,DIMKER):
 	Hwvs = []
-	q = [1]
-	q.extend([0]*(len(LE)-1))
+	q = [0]*(len(LE))
 	Stack = deque([q])
 	while len(Stack) != 0:
 		s = Stack.pop()
 		if SUM(s) == p:
 			Hwvs.append(s)
 		else:
-			i = [index for index,item in enumerate(s) if item != 0][-1]
-			parents = P.upper_covers(LE[i])
-			par1 = []
-			for q in parents:
-				par1.extend(P.lower_covers(q))
-			par1 = list(set(par1))
-			cci = [LE.index(q) for q in par1 if LE.index(q) >= i]
-			child = P.lower_covers(LE[i])
-			ci = [LE.index(c) for c in child]
-			ci.extend(cci)
-			if len(ci) != 0:
-				for k in ci:
+			I = [index for index,item in enumerate(s) if item != 0]
+			if len(I) == 0:
+				for k in range(len(s)):
 					r = s[:]
 					r[k] += 1
 					if (r[k] <= NN[k]) and (cond(r,k,LE,P,DIMKER) == True):
 						Stack.append(r)
+			else:
+				i = I[-1]	
+				parents = P.upper_covers(LE[i])
+				par1 = []
+				for q in parents:
+					par1.extend(P.lower_covers(q))
+				par1 = list(set(par1))
+				cci = [LE.index(q) for q in par1 if LE.index(q) >= i]
+				child = P.lower_covers(LE[i])
+				ci = [LE.index(c) for c in child]
+				ci.extend(cci)
+				if len(ci) != 0:
+					for k in ci:
+						r = s[:]
+						r[k] += 1
+						if (r[k] <= NN[k]) and (cond(r,k,LE,P,DIMKER) == True):
+							Stack.append(r)
 	return Hwvs
 
 #auxiliary max fcn

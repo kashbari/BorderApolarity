@@ -79,8 +79,10 @@ Dict,N = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11])
 LE = LE22
 P = P22
 
-#precomputed
+Dict30,N30 = PosetHWV.Combine(Dict30,LE30,N30,[Dict00,Dict11])
 
+
+#precomputed
 DIMKER = PosetHWV.DimKer(P,Dict,LE,n)
 '''
 DIMKER = {}
@@ -88,6 +90,7 @@ DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
 '''
+
 
 H = PosetHWV.dfs(p,LE,N,P,DIMKER)
 
@@ -126,7 +129,7 @@ def AnnPlane1(h):
 	q = H.index(h)
 	with open("sl3rk14m/sl3rk14res{}.txt".format(q),'w') as ff:
                 ff.write('h is'+str(h)+'\n')
-                K = list(np.subtract(N,h[0]))
+                K = h[0]
                 A,a,b = PosetHWV.wvs(K,N,Dict,LE)
 		print(A)
                 print(a)
@@ -245,9 +248,10 @@ def main():
 if __name__=="__main__":
 	main()
 # Main Code to run- SLURM!
-AnnPlane1(H[int(sys.argv[1])])
+'''
+AnnPlane1(H1[int(sys.argv[1])])
 
-
+'''
 for h in H[int(sys.argv[1])*350:(1+int(sys.argv[1]))*350]:
 	AnnPlane1(h)
 '''
