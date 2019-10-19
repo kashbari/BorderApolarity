@@ -31,24 +31,40 @@ def LinExt(L,P):
 	N = [L[s].shape[1] for s in Lin]
 	return LE,N
 
-def dimker(LowOps,n):
+def dimker(w,Dict,LE,LowOps,n):
 	if len(LowOps) == 0:
 		return None
 	else:
 		M = []
 		for k in LowOps:
-			M += BorderApolarity.SparseMatLowOp(k,n)
+			M += csr_matrix.transpose(BorderApolarity.SparseMatLowOp(k,n))
 		M1 = vstack(M)
-		M2 = sp.Matrix(M1.todense())
-		null = M2.nullspace()
-		return len(null)
+		M3 = Dict[w]
+		M2 = M1*M3
+		I,J,K = scipy.sparse.find(M2)
+		J = list(dict.fromkeys(J))
+		ker = int(Dict[w].shape[1]- len(J))
+		return ker 
+
+def DimKer(P,Dict,LE,n):
+	DIMKER = {}
+	for p in P:
+		if P.upper_covers(p) != []:
+			pi = [LE.index(q) for q in P.upper_covers(p)]
+			lo = [np.subtract(LE[q],p).tolist().index(2) for q in pi]
+			S = subsets(lo)
+			for s in S:
+				DIMKER[(p,s)] = dimker(p,Dict,LE,s,n)
+	return DIMKER
 
 def subsets(s):
 	l = []
 	for i in range(1,len(s)+1): 
 		l += list(map(tuple,itertools.combinations(s,i)))
-	return l
-
+	l1 = []
+	for k in range(len(l)):
+		l1.append(tuple(sorted(l[k])))
+	return l1
  
 
 #dimker = {Lowering ops intersections as tuple:dimker}
@@ -87,7 +103,7 @@ def cond(K,i,LE,P,DIMKER):
 		lo = [np.subtract(p,LE[i]).tolist().index(2) for p in parents]
 		lo.sort()
 		for s in subsets(lo):
-			sum = DIMKER[s]
+			sum = DIMKER[(LE[i],s)]
 			for j in s:
 				sum += K[pi[lo.index(j)]]
 			if K[i] <= sum:
@@ -95,6 +111,14 @@ def cond(K,i,LE,P,DIMKER):
 			else:
 				Test = False
 	return Test
+
+def firstnonzero(r):
+	I = [index for index,item in enumerate(r) if item != 0][-1]
+	if I == 1 :
+		return True
+	else:
+		return False
+
 def SUM(q):
 	S= 0
 	for k in range(len(q)):
@@ -110,31 +134,39 @@ def startdfs(S,q):
 	return S1
 
 
-def dfs(p,S,LE,NN,P,DIMKER):
+def dfs(p,LE,NN,P,DIMKER):
 	Hwvs = []
-	S1 = startdfs(S,len(LE))
-	Stack = deque(S1)
+	q = [0]*(len(LE))
+	Stack = deque([q])
 	while len(Stack) != 0:
 		s = Stack.pop()
 		if SUM(s) == p:
 			Hwvs.append(s)
 		else:
-			i = [index for index,item in enumerate(s) if item != 0][-1]
-			parents = P.upper_covers(LE[i])
-			par1 = []
-			for q in parents:
-				par1.extend(P.lower_covers(q))
-			par1 = list(set(par1))
-			cci = [LE.index(q) for q in par1 if LE.index(q) >= i]
-			child = P.lower_covers(LE[i])
-			ci = [LE.index(c) for c in child]
-			ci.extend(cci)
-			if len(ci) != 0:
-				for k in ci:
+			I = [index for index,item in enumerate(s) if item != 0]
+			if len(I) == 0:
+				for k in range(len(s)):
 					r = s[:]
 					r[k] += 1
 					if (r[k] <= NN[k]) and (cond(r,k,LE,P,DIMKER) == True):
 						Stack.append(r)
+			else:
+				i = I[-1]	
+				parents = P.upper_covers(LE[i])
+				par1 = []
+				for q in parents:
+					par1.extend(P.lower_covers(q))
+				par1 = list(set(par1))
+				cci = [LE.index(q) for q in par1 if LE.index(q) >= i]
+				child = P.lower_covers(LE[i])
+				ci = [LE.index(c) for c in child]
+				ci.extend(cci)
+				if len(ci) != 0:
+					for k in ci:
+						r = s[:]
+						r[k] += 1
+						if (r[k] <= NN[k]) and (cond(r,k,LE,P,DIMKER) == True):
+							Stack.append(r)
 	return Hwvs
 
 #auxiliary max fcn
