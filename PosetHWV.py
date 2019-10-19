@@ -31,24 +31,40 @@ def LinExt(L,P):
 	N = [L[s].shape[1] for s in Lin]
 	return LE,N
 
-def dimker(LowOps,n):
+def dimker(w,Dict,LE,LowOps,n):
 	if len(LowOps) == 0:
 		return None
 	else:
 		M = []
 		for k in LowOps:
-			M += BorderApolarity.SparseMatLowOp(k,n)
+			M += csr_matrix.transpose(BorderApolarity.SparseMatLowOp(k,n))
 		M1 = vstack(M)
-		M2 = sp.Matrix(M1.todense())
-		null = M2.nullspace()
-		return len(null)
+		M3 = Dict[w]
+		M2 = M1*M3
+		I,J,K = scipy.sparse.find(M2)
+		J = list(dict.fromkeys(J))
+		ker = int(Dict[w].shape[1]- len(J))
+		return ker 
+
+def DimKer(P,Dict,LE,n):
+	DIMKER = {}
+	for p in P:
+		if P.upper_covers(p) != []:
+			pi = [LE.index(q) for q in P.upper_covers(p)]
+			lo = [np.subtract(LE[q],p).tolist().index(2) for q in pi]
+			S = subsets(lo)
+			for s in S:
+				DIMKER[(p,s)] = dimker(p,Dict,LE,s,n)
+	return DIMKER
 
 def subsets(s):
 	l = []
 	for i in range(1,len(s)+1): 
 		l += list(map(tuple,itertools.combinations(s,i)))
-	return l
-
+	l1 = []
+	for k in range(len(l)):
+		l1.append(tuple(sorted(l[k])))
+	return l1
  
 
 #dimker = {Lowering ops intersections as tuple:dimker}
@@ -87,7 +103,7 @@ def cond(K,i,LE,P,DIMKER):
 		lo = [np.subtract(p,LE[i]).tolist().index(2) for p in parents]
 		lo.sort()
 		for s in subsets(lo):
-			sum = DIMKER[s]
+			sum = DIMKER[(LE[i],s)]
 			for j in s:
 				sum += K[pi[lo.index(j)]]
 			if K[i] <= sum:
@@ -110,10 +126,11 @@ def startdfs(S,q):
 	return S1
 
 
-def dfs(p,S,LE,NN,P,DIMKER):
+def dfs(p,LE,NN,P,DIMKER):
 	Hwvs = []
-	S1 = startdfs(S,len(LE))
-	Stack = deque(S1)
+	q = [1]
+	q.extend([0]*(len(LE)-1))
+	Stack = deque([q])
 	while len(Stack) != 0:
 		s = Stack.pop()
 		if SUM(s) == p:
