@@ -119,14 +119,16 @@ def HwithGrassCharts(H):
 			G = []
 			for k in range(aa):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
-				for g in itertools.product(*G):
-					H1.append((K,g))
-	return H1
+			G1 = list(itertools.product(*G))
+			G2 = [ [K], G1]
+			K1 = list(itertools.product(*G2))
+			H1.extend(K1)
+	return H1,K1
 
-H1 = HwithGrassCharts(H)
+H1,K1 = HwithGrassCharts(H)
 
 def AnnPlane1(h):
-	q = H.index(h)
+	q = H1.index(h)
 	with open("sl3rk14m/sl3rk14res{}.txt".format(q),'w') as ff:
                 ff.write('h is'+str(h)+'\n')
                 K = h[0]
@@ -248,10 +250,8 @@ def main():
 if __name__=="__main__":
 	main()
 # Main Code to run- SLURM!
-'''
 AnnPlane1(H1[int(sys.argv[1])])
 
-'''
 for h in H[int(sys.argv[1])*350:(1+int(sys.argv[1]))*350]:
 	AnnPlane1(h)
 '''
