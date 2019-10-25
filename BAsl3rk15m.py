@@ -76,22 +76,110 @@ Dict11,LE11,P11,N11 = WeightPoset(V11,LowOps,f)
 
 
 Dict,N = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11]) 
-P = P22
 LE = LE22
+P = P22
+
+Dict30,N30 = PosetHWV.Combine(Dict30,LE30,N30,[Dict00,Dict11])
+
 
 #precomputed
+DIMKER = PosetHWV.DimKer(P,Dict,LE,n)
+'''
 DIMKER = {}
 DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
+'''
 
 H = PosetHWV.dfs(p,LE,N,P,DIMKER)
 
+def flip(h,LE):
+	h1 = [0]*len(h)
+	for i in range(len(h)):
+		if h[i] != 0:
+			j = LE.index(tuple([x*(-1) for x in LE[i]]))
+			h1[j] = h[i]
+	return h1
+
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
+
+def HwithGrassCharts(H):
+	H1 = []
+	for h in H:
+		K = list(np.subtract(N,flip(h,LE)))
+		A,a,b = PosetHWV.wvs(K,N,Dict,LE)
+		if a == []:
+			H1.append((h,None))
+		else:
+			aa = len(a)
+			bb = PosetHWV.Max(b)
+			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+			G = []
+			for k in range(aa):
+				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
+			for g in itertools.product(*G):
+				H1.append((K,g))
+	return H1
+
+H1 = HwithGrassCharts(H)
+
+def AnnPlane1(h):
+	q = H1.index(h)
+	with open("sl3rk14m/sl3rk14res{}.txt".format(q),'w') as ff:
+                ff.write('h is'+str(h)+'\n')
+                K = h[0]
+                A,a,b = PosetHWV.wvs(K,N,Dict,LE)
+		print(A)
+                print(a)
+                print(b)
+		g = h[1]
+                if g == None:
+                        rk = PosetHWV.wvs01(A,dimS2AB,r,n,DS2AB)
+                        if dimS2AB-r >= rk:
+                                ff.write('CANDIDATE\n')
+                                ff.write(str(K)+'\n')
+                        else:
+                                ff.write('Nope!\n')
+                                ff.write(str(K)+'\n')
+		else:
+			A = PosetHWV.Convert1(A)
+                        aa = len(a)
+                        bb = PosetHWV.Max(b)
+                        print('aa and bb are')
+                        print(aa)
+                        print(bb)
+                        RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
+                        print(RING)
+			print(g)
+			B = A[:]
+			for j in range(len(a)):
+				print(B[a[j]].nrows(),B[a[j]].ncols())
+				B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
+			for j in range(len(A)):
+				if B[j] != None:
+					B[j] = matrix(RING,B[j])
+			B = PosetHWV.shstack(B,RING)
+			B = PosetHWV.COB1(B,n)
+			print(B.nrows(),B.ncols())      
+			t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)     
+			if t == True:
+				ff.write('CANDIDATE with parameters\n')
+				ff.write(str(K)+'\n')
+				ff.write(str(g)+'\n')
+			else:
+				ff.write('Nope! w/ p\n')
+				ff.write(str(K)+'\n')
+				ff.write(str(g)+'\n')
+	return
+
+
+
+
+'''
 def AnnPlane0(h):
 	q = H.index(h)
-	with open("sl3rk15/sl3rk15hwvgr{}.txt".format(q),'w') as ff:
+	with open("sl3rk14/sl3rk14hwvgr{}.txt".format(q),'w') as ff:
 		ff.write('h is'+str(h)+'\n')
 		K = list(np.subtract(N,h))
 		A,a,b = PosetHWV.wvs(K,N,Dict,LE)
@@ -144,7 +232,7 @@ def AnnPlane0(h):
 					ff.write(str(K)+'\n')
 					ff.write(str(g)+'\n')
 	return 
-'''
+
 # Main Code to run- In Series
 for c in C:
 	AnnPlane(c)
@@ -157,7 +245,17 @@ def main():
 
 if __name__=="__main__":
 	main()
-'''
 # Main Code to run- SLURM!
-AnnPlane0(H[int(sys.argv[1])])
+<<<<<<< HEAD
+'''
+AnnPlane1(H1[int(sys.argv[1])])
+
+'''
+=======
+AnnPlane1(H1[int(sys.argv[1])])
+
+>>>>>>> 742ffd3f549f3649a0eea8aeb1c34082ddd558ea
+for h in H[int(sys.argv[1])*350:(1+int(sys.argv[1]))*350]:
+	AnnPlane1(h)
+'''
 

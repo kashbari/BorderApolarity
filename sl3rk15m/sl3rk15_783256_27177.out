@@ -1,0 +1,43 @@
+slurmstepd: error: Could not run slurm task_prolog [/data/slurm/bin/taskprolog]: Permission denied
+/usr/local/SageMath/local/lib/python2.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:243: SparseEfficiencyWarning: splu requires CSC matrix format
+  warn('splu requires CSC matrix format', SparseEfficiencyWarning)
+/usr/local/SageMath/local/lib/python2.7/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:161: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+  'is in the CSC matrix format', SparseEfficiencyWarning)
+[<81x1 sparse matrix of type '<type 'numpy.int64'>'
+	with 1 stored elements in Compressed Sparse Row format>, <81x2 sparse matrix of type '<type 'numpy.int64'>'
+	with 4 stored elements in COOrdinate format>, <81x1 sparse matrix of type '<type 'numpy.int64'>'
+	with 1 stored elements in Compressed Sparse Row format>, <81x2 sparse matrix of type '<type 'numpy.int64'>'
+	with 4 stored elements in COOrdinate format>, <81x5 sparse matrix of type '<type 'numpy.int64'>'
+	with 32 stored elements in COOrdinate format>, <81x5 sparse matrix of type '<type 'numpy.int64'>'
+	with 34 stored elements in COOrdinate format>, <81x1 sparse matrix of type '<type 'numpy.int64'>'
+	with 1 stored elements in Compressed Sparse Row format>, <81x5 sparse matrix of type '<type 'numpy.int64'>'
+	with 32 stored elements in COOrdinate format>, <81x8 sparse matrix of type '<type 'numpy.int64'>'
+	with 93 stored elements in COOrdinate format>, <81x2 sparse matrix of type '<type 'numpy.int64'>'
+	with 4 stored elements in COOrdinate format>, <81x5 sparse matrix of type '<type 'numpy.int64'>'
+	with 34 stored elements in COOrdinate format>, <81x1 sparse matrix of type '<type 'numpy.int64'>'
+	with 1 stored elements in Compressed Sparse Row format>, <81x2 sparse matrix of type '<type 'numpy.int64'>'
+	with 4 stored elements in COOrdinate format>, <81x5 sparse matrix of type '<type 'numpy.int64'>'
+	with 32 stored elements in COOrdinate format>, <81x5 sparse matrix of type '<type 'numpy.int64'>'
+	with 34 stored elements in COOrdinate format>, <81x2 sparse matrix of type '<type 'numpy.int64'>'
+	with 4 stored elements in COOrdinate format>, <81x1 sparse matrix of type '<type 'numpy.int64'>'
+	with 1 stored elements in Compressed Sparse Row format>, <81x2 sparse matrix of type '<type 'numpy.int64'>'
+	with 4 stored elements in COOrdinate format>, <81x1 sparse matrix of type '<type 'numpy.int64'>'
+	with 1 stored elements in Compressed Sparse Row format>]
+[9, 10, 14, 15, 17]
+[(1, 2), (4, 5), (2, 5), (1, 2), (1, 2)]
+aa and bb are
+5
+6
+Multivariate Polynomial Ring in x_00, x_01, x_02, x_03, x_04, x_05, x_10, x_11, x_12, x_13, x_14, x_15, x_20, x_21, x_22, x_23, x_24, x_25, x_30, x_31, x_32, x_33, x_34, x_35, x_40, x_41, x_42, x_43, x_44, x_45 over Rational Field
+([0 1], [   1    0    0 x_10    0]
+[   0    1    0 x_11    0]
+[   0    0    1 x_12    0]
+[   0    0    0    0    1], [0 0 0 1 0]
+[0 0 0 0 1], [   1 x_30], [0 1])
+(81, 2)
+(81, 5)
+(81, 5)
+(81, 2)
+(81, 2)
+(64, 49)
+(288, 392)

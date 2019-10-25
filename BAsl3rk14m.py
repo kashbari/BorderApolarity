@@ -110,7 +110,7 @@ def HwithGrassCharts(H):
 		K = list(np.subtract(N,flip(h,LE)))
 		A,a,b = PosetHWV.wvs(K,N,Dict,LE)
 		if a == []:
-			H1.append((h,None))
+			H1.append((K,None))
 		else:
 			aa = len(a)
 			bb = PosetHWV.Max(b)
@@ -118,30 +118,16 @@ def HwithGrassCharts(H):
 			G = []
 			for k in range(aa):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
-<<<<<<< HEAD
-				for g in itertools.product(*G):
-					H1.append((K,g))
+			for g in itertools.product(*G):
+				H1.append((K,g))
 	return H1
 
 H1 = HwithGrassCharts(H)
-=======
-			G1 = list(itertools.product(*G))
-			G2 = [ [K], G1]
-			K1 = list(itertools.product(*G2))
-			H1.extend(K1)
-	return H1,K1
-
-H1,K1 = HwithGrassCharts(H)
->>>>>>> 742ffd3f549f3649a0eea8aeb1c34082ddd558ea
 
 def AnnPlane1(h):
 	q = H1.index(h)
 	with open("sl3rk14m/sl3rk14res{}.txt".format(q),'w') as ff:
-<<<<<<< HEAD
-               # ff.write('h is'+str(h)+'\n')
-=======
                 ff.write('h is'+str(h)+'\n')
->>>>>>> 742ffd3f549f3649a0eea8aeb1c34082ddd558ea
                 K = h[0]
                 A,a,b = PosetHWV.wvs(K,N,Dict,LE)
 		print(A)
