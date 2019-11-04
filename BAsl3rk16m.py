@@ -13,7 +13,7 @@ from sage.all import *
 import time
 
 n = 3
-r  = 14
+r  = 16
 p = r - (n**2-1)
 dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 
@@ -75,25 +75,25 @@ Dict00,LE00,P00,N00 = WeightPoset(V00,LowOps,f)
 Dict11,LE11,P11,N11 = WeightPoset(V11,LowOps,f)
 
 
-Dict,NN = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11]) 
+Dict,N = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11]) 
 LE = LE22
 P = P22
 
 Dict30,N30 = PosetHWV.Combine(Dict30,LE30,N30,[Dict00,Dict11])
-'''
+
 
 #precomputed
 DIMKER = PosetHWV.DimKer(P,Dict,LE,n)
-
+'''
 DIMKER = {}
 DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
-
-
-
-H = PosetHWV.dfs(p,LE,NN,P,DIMKER)
 '''
+
+
+H = PosetHWV.dfs(p,LE,N,P,DIMKER)
+
 def flip(h,LE):
 	h1 = [0]*len(h)
 	for i in range(len(h)):
@@ -102,38 +102,25 @@ def flip(h,LE):
 			h1[j] = h[i]
 	return h1
 
-load('structure.sage')
-
-def chnge(u):
-	u1 = [0]*len(LE)
-	for i in range(len(u)):
-		j = LE.index(u[i][0][0])
-		u1[j] = u[i][1]
-	return u1
-
-H = []
-for u in upsets:
-	H.append(chnge(u)) 
-
 DS2AB = PosetHWV.DictS2AB(n**2-1)
 
 
 def HwithGrassCharts(H):
 	H1 = []
 	for h in H:
-		K = list(np.subtract(NN,flip(h,LE)))
-		A,a,b = PosetHWV.wvs(K,NN,Dict,LE)
+		K = list(np.subtract(N,flip(h,LE)))
+		A,a,b = PosetHWV.wvs(K,N,Dict,LE)
 		if a == []:
-			H1.append((K,None))
+			H1.append((h,None))
 		else:
 			aa = len(a)
 			bb = PosetHWV.Max(b)
-			RING = PolynomialRing(QQ,['x%d_%d' %(i,j) for i in range(aa) for j in range(bb)])
+			RING = PolynomialRing(QQ,['x_%d%d' %(i,j) for i in range(aa) for j in range(bb)])
 			G = []
 			for k in range(aa):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
 			for g in itertools.product(*G):
-				H1.append((K,g,RING))
+				H1.append((K,g))
 			#G1 = list(itertools.product(*G))
 			#G2 = [ [K], G1]
 			#K1 = list(itertools.product(*G2))
@@ -144,10 +131,10 @@ H1 = HwithGrassCharts(H)
 
 def AnnPlane1(h):
 	q = H1.index(h)
-	with open("sl3rk14res{}.txt".format(q),'w') as ff:
+	with open("sl3rk16m/sl3rk16res{}.txt".format(q),'w') as ff:
                 ff.write('h is'+str(h)+'\n')
                 K = h[0]
-                A,a,b = PosetHWV.wvs(K,NN,Dict,LE)
+                A,a,b = PosetHWV.wvs(K,N,Dict,LE)
 		print(A)
                 print(a)
                 print(b)

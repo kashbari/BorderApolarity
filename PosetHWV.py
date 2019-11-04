@@ -152,15 +152,16 @@ def dfs(p,LE,NN,P,DIMKER):
 						Stack.append(r)
 			else:
 				i = I[-1]	
-				parents = P.upper_covers(LE[i])
-				par1 = []
-				for q in parents:
-					par1.extend(P.lower_covers(q))
-				par1 = list(set(par1))
-				cci = [LE.index(q) for q in par1 if LE.index(q) >= i]
-				child = P.lower_covers(LE[i])
-				ci = [LE.index(c) for c in child]
-				ci.extend(cci)
+				#parents = P.upper_covers(LE[i])
+				#par1 = []
+				#for q in parents:
+				#	par1.extend(P.lower_covers(q))
+				#par1 = list(set(par1))
+				#cci = [LE.index(q) for q in par1 if LE.index(q) >= i]
+				#child = P.lower_covers(LE[i])
+				#ci = [LE.index(c) for c in child]
+				#ci.extend(cci)
+				ci = range(i,len(LE))
 				if len(ci) != 0:
 					for k in ci:
 						r = s[:]

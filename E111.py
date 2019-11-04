@@ -3,7 +3,8 @@ import scipy.sparse
 import math
 from scipy.sparse import csr_matrix,identity,kron
 import scipy
-
+import PosetHWV
+import BorderApolarity
 import sys
 from sage.all import *
 
@@ -81,6 +82,67 @@ def E111(X,Y,Z,m):
 	return M
 
 
-	
-	
+#Let X,Y,Z denote same inputs as in AnnPlan1	
+def F111(X,Y,Z,NN,Dict,LE,n):
+	m = n**2-1
+	Ax,ax,bx = PosetHWV.wvs(X[0],NN,Dict,LE)
+	gx = X[1]
+	Ay,ay,by = PosetHWV.wvs(Y[0],NN,Dict,LE)
+	gy = Y[1]
+	Az,az,bz = PosetHWV.wvs(Z[0],NN,Dict,LE)
+	gz = Z[1]
+	if gx == gy == gz == None:
+		S = COB(n)
+		Bx = hstack([a for a in Ax if a != None])
+		By = hstack([a for a in Ay if a != None])
+		Bz = hstack([a for a in Az if a != None])
+		Bx = S.dot(Bx)
+		By = S.dot(By)
+		Bz = S.dot(Bz)
+	else:
+		Ax = PosetHWV.Convert1(Ax)
+		Ay = PosetHWV.Convert1(Ay)
+		Az = PosetHWV.Convert1(Az)
+		print(len(ax))
+		print(PosetHWV.Max(bx))
+		print(len(ay))
+		print(PosetHWV.Max(by))
+		print(len(az))
+		print(PosetHWV.Max(bz))
+		varx = ['x%d_%d' %(i,j) for i in range(len(ax)) for j in range(PosetHWV.Max(bx))]
+		vary = ['y%d_%d' %(i,j) for i in range(len(ay)) for j in range(PosetHWV.Max(by))]
+		varz = ['z%d_%d' %(i,j) for i in range(len(az)) for j in range(PosetHWV.Max(bz))]
+		var = varx + vary + varz
+		print(var)
+		RING = PolynomialRing(QQ,var)
+		Bx = Ax[:]
+		By = Ay[:]
+		Bz = Az[:]
+		for j in range(len(ax)):
+			Bx[ax[j]] = Bx[ax[j]]*(matrix(gx[j]).transpose()).sparse_matrix()
+		for j in range(len(ay)):
+			By[ay[j]] = By[ay[j]]*(matrix(gy[j]).transpose()).sparse_matrix()
+		for j in range(len(az)):
+			Bz[az[j]] = Bz[az[j]]*(matrix(gz[j]).transpose()).sparse_matrix()
+		for j in range(len(Ax)):
+			if Bx[j] != None:
+				Bx[j] = matrix(RING,Bx[j])
+		for j in range(len(Ay)):
+			if By[j] != None:
+				By[j] = matrix(RING,By[j])
+		for j in range(len(Az)):
+			if Bz[j] != None:
+				Bz[j] = matrix(RING,Bz[j])
+		Bx = PosetHWV.shstack(Bx,RING)
+		By = PosetHWV.shstack(By,RING)
+		Bz = PosetHWV.shstack(Bz,RING)
+		Bx = PosetHWV.COB1(Bx,n)
+		By = PosetHWV.COB1(By,n)
+		Bz = PosetHWV.COB1(Bz,n)
+	return Bx,By,Bz
+
+
+
+
+
 
