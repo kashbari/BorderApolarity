@@ -5,6 +5,6 @@
 #SBATCH --mem=3820
 #SBATCH -O
 #SBATCH --output=/data/scratch/kbari/BorderApolarity/sl3rk14/sl3rk14_%A_%a.out
-#SBATCH --array=10001-50000
+#SBATCH --array=10001-20000
 
 HOME=/data/scratch/kbari sage --nodotsage /data/scratch/kbari/BorderApolarity/BAsl3rk14m.py $SLURM_ARRAY_TASK_ID

@@ -91,9 +91,10 @@ DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
 
 
-
 H = PosetHWV.dfs(p,LE,NN,P,DIMKER)
 '''
+
+
 def flip(h,LE):
 	h1 = [0]*len(h)
 	for i in range(len(h)):
@@ -134,10 +135,6 @@ def HwithGrassCharts(H):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
 			for g in itertools.product(*G):
 				H1.append((K,g,RING))
-			#G1 = list(itertools.product(*G))
-			#G2 = [ [K], G1]
-			#K1 = list(itertools.product(*G2))
-			#H1.extend(K1)
 	return H1
 
 H1 = HwithGrassCharts(H)
@@ -173,7 +170,6 @@ def AnnPlane1(h):
 			B = A[:]
 			for j in range(len(a)):
 				print(B[a[j]].nrows(),B[a[j]].ncols())
-				print(g[j])
 				B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
 			for j in range(len(A)):
 				if B[j] != None:

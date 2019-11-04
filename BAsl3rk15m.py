@@ -90,7 +90,10 @@ DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
 '''
+<<<<<<< HEAD
 
+=======
+>>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 
 H = PosetHWV.dfs(p,LE,N,P,DIMKER)
 
@@ -121,10 +124,13 @@ def HwithGrassCharts(H):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
 			for g in itertools.product(*G):
 				H1.append((K,g))
+<<<<<<< HEAD
 			#G1 = list(itertools.product(*G))
 			#G2 = [ [K], G1]
 			#K1 = list(itertools.product(*G2))
 			#H1.extend(K1)
+=======
+>>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 	return H1
 
 H1 = HwithGrassCharts(H)
@@ -160,7 +166,10 @@ def AnnPlane1(h):
 			B = A[:]
 			for j in range(len(a)):
 				print(B[a[j]].nrows(),B[a[j]].ncols())
+<<<<<<< HEAD
 				print(g[j])
+=======
+>>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 				B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
 			for j in range(len(A)):
 				if B[j] != None:
@@ -252,8 +261,20 @@ def main():
 if __name__=="__main__":
 	main()
 # Main Code to run- SLURM!
+<<<<<<< HEAD
 AnnPlane1(H1[int(sys.argv[1])])
 
+=======
+<<<<<<< HEAD
+'''
+AnnPlane1(H1[int(sys.argv[1])])
+
+'''
+=======
+AnnPlane1(H1[int(sys.argv[1])])
+
+>>>>>>> 742ffd3f549f3649a0eea8aeb1c34082ddd558ea
+>>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 for h in H[int(sys.argv[1])*350:(1+int(sys.argv[1]))*350]:
 	AnnPlane1(h)
 '''
