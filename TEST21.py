@@ -81,9 +81,7 @@ Dict,NN = PosetHWV.Combine(Dict22,LE22,N22,[Dict30,Dict03,Dict00,Dict11])
 LE = LE22
 P = P22
 
-Dict30,N30 = PosetHWV.Combine(Dict30,LE30,N30,[Dict00,Dict11])
 '''
-
 #precomputed
 DIMKER = PosetHWV.DimKer(P,Dict,LE,n)
 
@@ -146,7 +144,6 @@ Dict1 = data['M']
 def AnnPlane1(h):
 	q = H1.index(h)
 	with open("sl3rk14res{}.txt".format(q),'w') as ff:
-                ff.write('h is'+str(h)+'\n')
                 K = h[0]
                 A,a,b = PosetHWV.wvs(K,NN,Dict1,LE)
 		print(A)
@@ -156,10 +153,13 @@ def AnnPlane1(h):
                 if g == None:
 			B = hstack([a for a in A if a != None])
 			B = E111.csr2matsage(B)
+			B = em*B
+			print(B.nrows(),B.ncols())
 			B2 = matrix_11_to_21(B,n**2-1)
                         print(B2.nrows(),B2.ncols())
 			rk = rank(B2)
-                        if dimS2AB-r <= rk:
+                        print(rk)
+			if dimS2AB-rk >= r:
                                 ff.write('CANDIDATE\n')
                                 ff.write(str(K)+'\n')
                         else:
@@ -183,10 +183,12 @@ def AnnPlane1(h):
 				if B[j] != None:
 					B[j] = matrix(RING,B[j])
 			B = PosetHWV.shstack(B,RING)
+			B = em*B
+			print(B.nrows(),B.ncols())
 			#B = E111.csr2matsage(B)
 			B2 = matrix_11_to_21(B,n**2-1)
 			print(B2.nrows(),B2.ncols())      
-			t = PartialSmithForm.MinRank(B2,RING,r,dimS2AB)     
+			t = PartialSmithForm.MinRank(B2,RING,14,dimS2AB)     
 			if t == True:
 				ff.write('CANDIDATE with parameters\n')
 				ff.write(str(K)+'\n')
