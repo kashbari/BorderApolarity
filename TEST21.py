@@ -1,5 +1,7 @@
 import BorderApolarity
 import PosetHWV
+import E111
+import PartialSmithForm
 
 import numpy as np
 import sympy as sp
@@ -104,7 +106,7 @@ def flip(h,LE):
 	return h1
 
 load('structure.sage')
-
+load('borderapolarity.sage')
 def chnge(u):
 	u1 = [0]*len(LE)
 	for i in range(len(u)):
@@ -139,18 +141,24 @@ def HwithGrassCharts(H):
 
 H1 = HwithGrassCharts(H)
 
+Dict1 = data['M']
+
 def AnnPlane1(h):
 	q = H1.index(h)
 	with open("sl3rk14res{}.txt".format(q),'w') as ff:
                 ff.write('h is'+str(h)+'\n')
                 K = h[0]
-                A,a,b = PosetHWV.wvs(K,NN,Dict,LE)
+                A,a,b = PosetHWV.wvs(K,NN,Dict1,LE)
 		print(A)
                 print(a)
                 print(b)
 		g = h[1]
                 if g == None:
-                        rk = PosetHWV.wvs01(A,dimS2AB,r,n,DS2AB)
+			B = hstack([a for a in A if a != None])
+			B = E111.csr2matsage(B)
+			B2 = matrix_11_to_21(B,n**2-1)
+                        print(B2.nrows(),B2.ncols())
+			rk = rank(B2)
                         if dimS2AB-r >= rk:
                                 ff.write('CANDIDATE\n')
                                 ff.write(str(K)+'\n')
@@ -158,7 +166,7 @@ def AnnPlane1(h):
                                 ff.write('Nope!\n')
                                 ff.write(str(K)+'\n')
 		else:
-			A = PosetHWV.Convert1(A)
+			#A = PosetHWV.Convert1(A)
                         aa = len(a)
                         bb = PosetHWV.Max(b)
                         print('aa and bb are')
@@ -175,9 +183,10 @@ def AnnPlane1(h):
 				if B[j] != None:
 					B[j] = matrix(RING,B[j])
 			B = PosetHWV.shstack(B,RING)
-			B = PosetHWV.COB1(B,n)
-			print(B.nrows(),B.ncols())      
-			t = PosetHWV.wvs1(B,dimS2AB,r,n,RING,DS2AB)     
+			#B = E111.csr2matsage(B)
+			B2 = matrix_11_to_21(B,n**2-1)
+			print(B2.nrows(),B2.ncols())      
+			t = PartialSmithForm.MinRank(B2,RING,r,dimS2AB)     
 			if t == True:
 				ff.write('CANDIDATE with parameters\n')
 				ff.write(str(K)+'\n')
