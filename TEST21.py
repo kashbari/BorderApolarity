@@ -159,7 +159,7 @@ def AnnPlane1(h):
 			B2 = matrix_11_to_21(B,n**2-1)
                         print(B2.nrows(),B2.ncols())
 			rk = rank(B2)
-                        if dimS2AB-r >= rk:
+                        if dimS2AB-r <= rk:
                                 ff.write('CANDIDATE\n')
                                 ff.write(str(K)+'\n')
                         else:
