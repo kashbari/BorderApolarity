@@ -40,13 +40,44 @@ def Tsln(n):
 
 T,reps,C = Tsln(3)
 data,em = border_apolarity_110data(T,reps,C)
-r = 50
-upsets = list(grassmannian_hwvs_upsets(data,r))
-print len(upsets)
+r = 14
+upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
+
+
+#print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
 #     print v
-
+G = grassmannian_hwvs(data,r)
 # for v in grassmannian_hwvs(data,r):
 #     print v
+
+#SLURM IT UP
+k = int(sys.argv[1])
+
+#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+
+def Grassmannian_hwvs(k,mdata,verbose=True):
+	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
+		yield hwt
+
+def border_apolarity_110(T,reps,C,r,k):
+	with open("sl3rk14res{}.txt".format(k),'w') as ff:
+		mdata,em = border_apolarity_110data(T,reps,C)
+		admin = len(T)
+		cand110 = []
+		i = 0
+		for ghwv in Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r):
+			cand = em*ghwv
+			cand = AB_grass_restrict_ok(cand,admin,r)
+			if cand is not None:
+				cand110.append(cand)
+				ff.write(str(i)+'. Candidate is\n')
+			else:
+				ff.write(str(i)+'. None\n')
+			i = i+1
+	return 
+
+border_apolarity_110(T,reps,C,r,k)
+
 
 # vim: ft=python
