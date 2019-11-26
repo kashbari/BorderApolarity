@@ -40,7 +40,7 @@ def Tsln(n):
 
 T,reps,C = Tsln(3)
 data,em = border_apolarity_110data(T,reps,C)
-r = 14
+r = 15
 upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
@@ -52,19 +52,9 @@ G = grassmannian_hwvs(data,r)
 #     print v
 
 #SLURM IT UP
-k = int(sys.argv[1])
+#k = int(sys.argv[1])
 
-H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
-
-'''
-for h in H:
-	if h.base_ring() == QQ:
-		t = rank(h)
-'''
-
-
-
-
+#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
@@ -88,7 +78,7 @@ def border_apolarity_110(T,reps,C,r,k):
 			i = i+1
 	return 
 
-border_apolarity_110(T,reps,C,r,k)
+#border_apolarity_110(T,reps,C,r,k)
 
 
 # vim: ft=python

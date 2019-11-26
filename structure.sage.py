@@ -59,18 +59,29 @@ G = grassmannian_hwvs(data,r)
 #SLURM IT UP
 k = int(sys.argv[_sage_const_1 ])
 
-#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+
+'''
+for h in H:
+	if h.base_ring() == QQ:
+		t = rank(h)
+'''
+
+
+
+
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
 		yield hwt
 
 def border_apolarity_110(T,reps,C,r,k):
-	with open("sl3rk14res{}.txt".format(k),'w') as ff:
+	with open("RESULTS/sl3rk14res{}.txt".format(k),'w') as ff:
 		mdata,em = border_apolarity_110data(T,reps,C)
 		admin = len(T)
 		cand110 = []
 		i = _sage_const_0 
+		ff.write(str(len(H))+'\n')
 		for ghwv in Grassmannian_hwvs(k,mdata,em.dimensions()[_sage_const_0 ]-r):
 			cand = em*ghwv
 			cand = AB_grass_restrict_ok(cand,admin,r)
