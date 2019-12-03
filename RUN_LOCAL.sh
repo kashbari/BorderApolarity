@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for value in {253..305}
+for value in {302..305}
 do
 	sage structure.sage $value
 done

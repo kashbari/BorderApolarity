@@ -52,16 +52,16 @@ G = grassmannian_hwvs(data,r)
 #     print v
 
 #SLURM IT UP
-#k = int(sys.argv[1])
+k = int(sys.argv[1])
 
-#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
 		yield hwt
 
 def border_apolarity_110(T,reps,C,r,k):
-	with open("RESULTS/sl3rk14res{}.txt".format(k),'w') as ff:
+	with open("RESULTS3_15/sl3rk15res{}.txt".format(k),'w') as ff:
 		mdata,em = border_apolarity_110data(T,reps,C)
 		admin = len(T)
 		cand110 = []
@@ -72,13 +72,13 @@ def border_apolarity_110(T,reps,C,r,k):
 			cand = AB_grass_restrict_ok(cand,admin,r)
 			if cand is not None:
 				cand110.append(cand)
-				ff.write(str(i)+'. Candidate is\n')
+				ff.write(str(i)+'. Candidate\n')
 			else:
 				ff.write(str(i)+'. None\n')
 			i = i+1
 	return 
 
-#border_apolarity_110(T,reps,C,r,k)
+border_apolarity_110(T,reps,C,r,k)
 
 
 # vim: ft=python
