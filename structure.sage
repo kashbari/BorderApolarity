@@ -51,19 +51,12 @@ G = grassmannian_hwvs(data,r)
 # for v in grassmannian_hwvs(data,r):
 #     print v
 
+
+
 #SLURM IT UP
 k = int(sys.argv[1])
 
 H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
-
-'''
-for h in H:
-	if h.base_ring() == QQ:
-		t = rank(h)
-'''
-
-
-
 
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
@@ -89,6 +82,5 @@ def border_apolarity_110(T,reps,C,r,k):
 	return 
 
 border_apolarity_110(T,reps,C,r,k)
-
 
 # vim: ft=python
