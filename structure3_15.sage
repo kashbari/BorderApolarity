@@ -68,15 +68,16 @@ def border_apolarity_110(T,reps,C,r,k):
 		cand110 = []
 		i = 0
 		ff.write(str(len(H))+'\n')
-		for ghwv in Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r):
-			cand = em*ghwv
-			cand = AB_grass_restrict_ok(cand,admin,r)
-			if cand is not None:
-				cand110.append(cand)
-				ff.write(str(i)+'. Candidate\n')
-			else:
-				ff.write(str(i)+'. None\n')
-			i = i+1
+		if len(H) != 0:
+			for ghwv in Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r):
+				cand = em*ghwv
+				cand = AB_grass_restrict_ok(cand,admin,r)
+				if cand is not None:
+					cand110.append(cand)
+					ff.write(str(i)+'. Candidate\n')
+				else:
+					ff.write(str(i)+'. None\n')
+				i = i+1
 	return 
 
 border_apolarity_110(T,reps,C,r,k)
