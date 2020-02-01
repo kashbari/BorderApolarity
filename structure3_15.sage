@@ -1,4 +1,4 @@
-load('borderapolarity.sage')
+load('borderapolarity2.sage')
 
 def e(i,j,n):
     return matrix(QQ,n,n,{(i,j):1})
@@ -44,6 +44,9 @@ r = 15
 upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
+# Try 111 add S = {4,21,114} or set of upsets with candidate hwv
+border_apolarity_cycl_inv(T,reps,C,R)
+
 #print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
 #     print v
@@ -53,9 +56,9 @@ G = grassmannian_hwvs(data,r)
 
 
 #SLURM IT UP
-k = int(sys.argv[1])
+#k = int(sys.argv[1])
 
-H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+#H = list(grassmannian_hwvs_for_upset(data,upsets[131],verbose=True))
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
@@ -80,6 +83,6 @@ def border_apolarity_110(T,reps,C,r,k):
 				i = i+1
 	return 
 
-border_apolarity_110(T,reps,C,r,k)
+#border_apolarity_110(T,reps,C,r,k)
 
 # vim: ft=python

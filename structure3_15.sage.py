@@ -3,7 +3,7 @@
 from sage.all_cmdline import *   # import sage library
 
 _sage_const_3 = Integer(3); _sage_const_2 = Integer(2); _sage_const_1 = Integer(1); _sage_const_0 = Integer(0); _sage_const_15 = Integer(15)
-load('borderapolarity.sage')
+load('borderapolarity2.sage')
 
 def e(i,j,n):
     return matrix(QQ,n,n,{(i,j):_sage_const_1 })
