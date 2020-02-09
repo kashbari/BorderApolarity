@@ -1,4 +1,4 @@
-load('borderapolarity2.sage')
+load('borderapolarity3.sage')
 
 def e(i,j,n):
     return matrix(QQ,n,n,{(i,j):1})
@@ -45,7 +45,7 @@ upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
 # Try 111 add S = {4,21,114} or set of upsets with candidate hwv
-border_apolarity_cycl_inv(T,reps,C,R)
+#border_apolarity_cycl_inv(T,reps,C,r)
 
 #print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
@@ -56,23 +56,24 @@ G = grassmannian_hwvs(data,r)
 
 
 #SLURM IT UP
-#k = int(sys.argv[1])
+k = int(sys.argv[1])
 
-#H = list(grassmannian_hwvs_for_upset(data,upsets[131],verbose=True))
+H = list(grassmannian_hwvs_for_upset(data,upsets[131],verbose=True))
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
 		yield hwt
 
 def border_apolarity_110(T,reps,C,r,k):
-	with open("RESULTS3_15/sl3rk15res{}.txt".format(k),'w') as ff:
+	with open("RESULTS3_15/sl3rk15res{}_0.txt".format(k),'w') as ff:
 		mdata,em = border_apolarity_110data(T,reps,C)
 		admin = len(T)
 		cand110 = []
 		i = 0
 		ff.write(str(len(H))+'\n')
 		if len(H) != 0:
-			for ghwv in Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r):
+			G = Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r)
+			for ghwv in G:
 				cand = em*ghwv
 				cand = AB_grass_restrict_ok(cand,admin,r)
 				if cand is not None:
@@ -83,6 +84,6 @@ def border_apolarity_110(T,reps,C,r,k):
 				i = i+1
 	return 
 
-#border_apolarity_110(T,reps,C,r,k)
+border_apolarity_110(T,reps,C,r,k)
 
 # vim: ft=python
