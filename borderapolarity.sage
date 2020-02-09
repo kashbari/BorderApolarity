@@ -1,59 +1,75 @@
-# In this file, modules of semisimple lie algebras represented in code in the
-# following way:
-# Distinguish primitive positive root vectors x_1, ..., x_r. These determine 
-# corresponding h_i and y_i so that [x_i,y_i] = h_i, [h_i, x_i] = 2x_i and 
-# [h_i,y_i] = -2y_i. 
+def border_apolarity(T,r,ssonly=True):
+    if ssonly:
+        Lg,reps = stabilizer_reps_ss(T)
+    else:
+        Lg,reps = stabilizer_reps(T)
+    return border_apolarity_gen(T,Lg,reps,r)
 
-# Representations will be specified by giving the action of these three lists of
-# elements. Explicitly, if V is a representation of L of dimension n, V will be
-# described by [ [ X_1, ..., X_r], [Y_1, ..., Y_r], [H_1, ..., H_r] ], where
-# the X_i, Y_i and H_i are n x n matrices.
+def border_apolarity_gen(T,Lg,reps,r):
+    dims = (len(T),) + T[0].dimensions()
+    global cands
+    cands = [[] for i in range(3)]
+    for missing in range(3):
+        mdata,em = border_apolarity_110data(T,Lg,reps,missing)
+        for ghwv in grassmannian_hwvs(mdata, em.dimensions()[0]-r):
+            cand = em*ghwv
+            cand = AB_grass_restrict_ok(cand,dims[(missing+1)%3],r,fast=False)
+            if cand is not None:
+                cands[missing].append(cand)
+                print 'candidates',len(cands[missing])
+    cand111 = []
+    for xs in product(*map(enumerate,cands)):
+        ixs = tuple(i for i,x in xs)
+        print ixs,
+        sys.stdout.flush()
+        xs = tuple(x for _,x in xs)
+        Rf,Rems = adjoin_rings([x.base_ring() for x in xs])
+        W = matrix_to_111(*[x.apply_map(em,Rf) for em,x in zip(Rems,xs)])
+        eqs = matrix_rank_le_eqs(W,W.dimensions()[0]-r)
+        if 1 in eqs: continue
+        print 'candidate'
+        cand111.append((W.change_ring(W.base_ring().quo(eqs)),ixs))
+    return cand111,cands
 
-# weights will be described by the list of their values on the H_i, which are
-# necessarily integers
+# this is special as it exploits cyclic symmetry of Mn to avoid 
+# computing I101 and I011. It also uses the natural representation of the
+# symmetry group of Mn
+def border_apolarity_mmult(n,r):
+    T = matrixmult(n,n,n)
+    Lg,reps = stabilizer_reps_mmult(n,n,n)
+    return border_apolarity_cycl_inv(T,Lg,reps,r)
 
-# In addition to the representations in the above form, routines of this file
-# also require the cartan matrix of L, with rows and columns ordered to
-# correspond with the x_i.
-
-from itertools import *
-
-# border apolarity specialized to cyclic invariant tensors, so only 110
-# candidates are computed. 
-def border_apolarity_cycl_inv(T,reps,C,r):
-    mdata,em = border_apolarity_110data(T,reps,C)
+# border apolarity specialized to cyclic invariant tensors, so only one of I110,
+# I101 and I011 are computed. The symmetry lie algebra is also a parameter, so
+# special forms of the symmetry group can be used (as in matrix multiplication)
+def border_apolarity_cycl_inv(T,Lg,reps,r):
+    mdata,em = border_apolarity_110data(T,Lg,reps)
     adim = len(T)
+    global cand110
     cand110 = []
     for ghwv in grassmannian_hwvs(mdata, em.dimensions()[0]-r):
         cand = em*ghwv
-        cand = AB_grass_restrict_ok(cand,adim,r)
+        cand = AB_grass_restrict_ok(cand,adim,r,fast=False)
         if cand is not None:
             cand110.append(cand)
             print 'candidates',len(cand110)
-
-    # For our purposes, assume that there are no parameters in the results
-    # (and there is at most one solution for each choice of charts of the
-    # grassmannians). If this condition does not hold, the following will throw
-    # an exception
-    cand110 = [ cand.change_ring(QQ) for cand in cand110 ]
-
     cand111 = []
     for xs in product(*map(enumerate,[cand110]*3)):
         ixs = tuple(i for i,x in xs)
-        if ixs != min([ixs,ixs[1:]+ixs[:1],ixs[2:]+ixs[:2]]):
-            # we may skip triples equal to others we check modulo cyclic permutation
+        if ixs != min([ixs,cyclicr(ixs),cyclicr(cyclicr(ixs))]):
             continue
         print ixs,
         sys.stdout.flush()
-
-        W = matrix_to_111(*[x for _,x in xs])
-        if W.rank() <= W.dimensions()[0] - r:
-            cand110.append(W)
+        xs = tuple(x for _,x in xs)
+        Rf,Rems = adjoin_rings([x.base_ring() for x in xs])
+        W = matrix_to_111(*[x.apply_map(em,Rf) for em,x in zip(Rems,xs)])
+        eqs = matrix_rank_le_eqs(W,W.dimensions()[0]-r)
+        if 1 in eqs: continue
+        print 'candidate'
+        cand111.append((W.change_ring(W.base_ring().quo(eqs)),ixs))
     return cand111,cand110
 
-# computes the weight_decomposition data of the 110, 101, or 011 space
-# (depending on missing), and the embedding Tperp -> A \ot B (for 110, eg).
-def border_apolarity_110data(T,reps,C,missing=2):
+def border_apolarity_110data(T,Lg,reps,missing=2):
     reps = reps[missing+1:] + reps[:missing]
     print 'Afull..'
     Afull = module_dual(module_product(*reps))
@@ -65,108 +81,101 @@ def border_apolarity_110data(T,reps,C,missing=2):
     Tperp = Tperp.right_kernel_matrix().transpose().sparse_matrix()
 
     M = submodule_from_basis(Afull,Tperp)
-    data = weight_decomposition(M,C)
-    em = Tperp
+    data = weight_decomposition(Lg,M)
 
-    return data,em
+    return data,Tperp
 
-# This function returns a generator yielding the set of highest weight vectors 
-# of the grassmannian, each possibly parameterized (having entries in a
-# polynomial ring modulo an ideal). The grassmannian planes are represented 
-# as the column space of matrices.
-
-# mdata is the information for the module as summarized by weight_decomposition
-# subdim determines which grassmannian to consider (the dimension of the returned spaces)
+# # data describes a module, This function returns a generator yielding a set of
+# # highest weight vectors of the grassmannian, each possibly parameterized
+# # (having entries in a polynomial ring). All highest weight vectors should
+# # appear, but perhaps not uniquely.
 def grassmannian_hwvs(mdata,subdim,verbose=True):
     for upi,up in enumerate(grassmannian_hwvs_upsets(mdata,subdim)):
         if verbose: print upi,
         for hwt in grassmannian_hwvs_for_upset(mdata,up,verbose):
             yield hwt
 
-# For a fixed choice of subspace dimensions for each weight space (given by up),
-# this function returns a generator yielding the set of highest weight vectors
-# for the module given by mdata
+def grassmannian_hwvs_FES(mdata,subdim):
+    upsets = tuple(grassmannian_hwvs_upsets(mdata,subdim))
+    return FESset(upsets).map(lambda up:
+            tuple(grassmannian_hwvs_for_upset(mdata,up,False)))
+
 def grassmannian_hwvs_for_upset(mdata,up,verbose=False):
+    P = mdata['P']
     C = mdata['C']
     A = mdata['a']
-    M = mdata['M']
-    ssrank = len(A[0])
+    # M,S = M_to_number_field(mdata['M'])
+    M,S = mdata['M'],QQ
+    ssdim = len(A[0])
 
     if verbose: 
         upd = dict(up)
-        missing = [p[0] for p in mdata['tot'] if p[-1] > upd.get(p,0)]
+        missing = [p[0]+(p[-1]-upd.get(p,0),) 
+                for p in mdata['tot'] if p[-1] > upd.get(p,0)]
         print 'grass hwv missing',missing
 
     if all((p[-1]-m)*m == 0 for p,m in up):
-        # no parameters needed, so its full in every nontrivial coordinate
-        # This must be fine, due to conditions on up, so immediately return
         yield block_matrix([[M[p[0]] for p,_ in up]],subdivide=False)
-        return
+    else:
+        for j,nzs in enumerate(product(*[combinations(range(p[-1]),m) \
+                for p,m in up])):
+            if verbose:
+                print j,
+                sys.stdout.flush()
 
-    # Parameters needed. We must consider the product of grassmannians in each
-    # weight space with dimensions dictated by up. In the following, letters
-    # m and f will refer m dimensional planes inside f dimensional space.
+            names = [x+str(i) for x,q,nz in zip(alphagen(),up,nzs)
+                    for i in range(sum((ks[1]-ks[0]-1)*(j+1) 
+                        for j,ks in enumerate(zip(nz,nz[1:]+(q[0][-1],))))) ]
+            R = PolynomialRing(S,names,implementation='singular') if len(names) > 0 else S
 
-    # Each grassmannian will be covered by (f choose m) charts, corresponding to
-    # the choices of m lexicographically smallest pivot rows in a f x m matrix with 
-    # column space the plane.
+            W = {}
+            pi = 0
+            for q,nz in zip(up,nzs):
+                p, m = q
+                wt, f = p
 
-    # The following loops over all tuples of all such choices over all the weight spaces
-    for nzsi,nzs in enumerate(product(*[combinations(range(p[-1]),m) \
-            for p,m in up])):
+                t = matrix(R,f,m,sparse=True)
+                t[nz,:] = identity_matrix(R,m,sparse=True)
+                for j,ks in enumerate(zip(nz,nz[1:]+(f,))):
+                    inc = (ks[1]-ks[0]-1)*(j+1)
+                    t[ks[0]+1:ks[1],:j+1] = matrix(R,ks[1]-ks[0]-1,j+1,R.gens()[pi:pi+inc])
+                    pi += inc 
 
-        if verbose:
-            print nzsi,
-            sys.stdout.flush()
+                W[wt] = (M[p[0]]*t, m,f)
+            cur = block_matrix([[B for B,m,f in W.values()]],subdivide=False)
 
-        nvars = sum( (nzi+1)*(j-i-1) for ((wt,f),m),nz in zip(up,nzs)
-            for nzi,(i,j) in enumerate(zip(nz,nz[1:]+(f,))))
-        R = PolynomialRing(QQ,'t',nvars,implementation='singular') if nvars > 0 else QQ
+            eqs = []
+            for wt,v in W.items():
+                B,m,f = v
+                if m==0: continue # for clarity and future changes, should never proc
+                def raisewt(wt,k):
+                    return tuple(a+b for a,b in zip(wt,C[k,:].list())) + wt[ssdim:]
+                for k in range(ssdim):
+                    rwt = raisewt(wt,k)
+                    curd = W.get(rwt,None)
+                    if curd is not None:
+                        Braise,mr,fr = curd
+                        if mr == fr: continue
+                        # ttt = M[(rwt,hwt)]
+                        # ttt = ttt.change_ring(R)
+                        # ttt = ttt.augment(A[0][k]*B)
+                        # if not all(e==0 for e in
+                        #         minors_sparse(ttt,ttt.dimensions()[1])):
+                        #     import IPython
+                        #     IPython.embed()
+                        #     assert False
+                        mm = Braise.augment(A[0][k]*B)
+                        eqs.extend(minors_sparse(mm,mr+1))
+                    elif rwt in M:
+                        eqs.extend(minors_sparse(A[0][k]*B,1))
 
-        W = {}
-        pi = 0
-        for q,nz in zip(up,nzs):
-            p, m = q
-            wt, f = p
-                
-            t = matrix(R,f,m,sparse=True)
-            t[nz,:] = identity_matrix(R,m,sparse=True)
-            for j,ks in enumerate(zip(nz,nz[1:]+(f,))):
-                inc = (ks[1]-ks[0]-1)*(j+1)
-                t[ks[0]+1:ks[1],:j+1] = matrix(R,ks[1]-ks[0]-1,j+1,R.gens()[pi:pi+inc])
-                pi += inc 
-
-            W[wt] = (M[p[0]]*t, m,f)
-        cur = block_matrix([[B for B,m,f in W.values()]],subdivide=False)
-
-        # cur will be the result. However, first we must restrict the parameters
-        # of cur to those for which the full grassmannian plane is closed under
-        # raising operators. In the below, eqs will be populated with the
-        # corresponding list of polynomial conditions on the parameters
-
-        eqs = []
-        for wt,v in W.items():
-            B,m,f = v
-            def raisewt(wt,k):
-                return tuple(a+b for a,b in zip(wt,C[:,k].list()))
-            for k in range(ssrank):
-                rwt = raisewt(wt,k)
-                curd = W.get(rwt,None)
-                if curd is not None:
-                    Braise,mr,fr = curd
-                    if mr == fr: continue
-                    mm = Braise.augment(A[0][k]*B)
-                    eqs.extend(minors_sparse(mm,mr+1))
-                elif rwt in M:
-                    eqs.extend((A[0][k]*B).coefficients())
-
-        if len(eqs) > 0:
-            I = R.ideal(eqs)
-            if R.one() in I: continue
-            Rbar = R.quo(I)
-            cur = cur.apply_map(Rbar,sparse=True,R=Rbar)
-        yield cur
-    if verbose: print
+            if len(eqs) > 0:
+                I = R.ideal(eqs)
+                if R.one() in I: continue
+                Rbar = R.quo(I)
+                cur = cur.apply_map(Rbar,sparse=True,R=Rbar)
+            yield cur
+        if verbose: print
 
 # Returns an iterator over a set of choices of subspace dimensions for a
 # grassmannian highest weight vector which contains at least all legal choices. 
@@ -227,24 +236,19 @@ def grassmannian_hwvs_upsets(mdata,sz):
         lp.set_min(lp[p],0)
         lp.set_max(lp[p],mult)
 
-    print len(list(dfs(0)))
+    # print len(list(dfs(0)))
     return dfs(0)
 
-# takes a grassmannian candidate, represented as the column space of the matrix
-# W, possibly with parameters, and performs the 210 and 120 tests. If no
-# parameter value satisfies the test, None is returned, otherwise, W is returned
-# in the quotient ring modulo the required equations on the parameters
-def AB_grass_restrict_ok(W,adim,r):
+def AB_grass_restrict_ok(W,adim,rcandidate,fast=False):
     bdim = W.dimensions()[0] // adim
     M = matrix_11_to_21(W,adim)
-    eqs = matrix_rank_le_eqs(M, M.dimensions()[0] - r)
-    # if 1 in eqs or (M.base_ring() is not QQ and 1 in M.base_ring().ideal(eqs)): 
-    if 1 in eqs:
-        return None
+    eqs = matrix_rank_le_eqs(M, M.dimensions()[0] - rcandidate,0 if fast else 1)
+    if 1 in eqs: return None
     M = matrix_11_to_21(transpose_tensor(W,adim),bdim)
-    eqs.extend(matrix_rank_le_eqs(M, M.dimensions()[0] - r))
-    if 1 in eqs or (M.base_ring() is not QQ and 1 in M.base_ring().ideal(eqs)): 
-        return None
+    eqs.extend(matrix_rank_le_eqs(M, M.dimensions()[0] - rcandidate,0 if fast else 1))
+    # eqs = list(ideal(eqs).interreduced_basis())
+    if 1 in eqs: return None
+    if fast: return W
     S = W.base_ring().quo(eqs)
     return W.change_ring(S)
 
@@ -300,315 +304,111 @@ def transpose_tensor(B,a):
         Bp[(j*a+i,k)] = B[I,k]
     return matrix(B.base_ring(),B.dimensions()[0],B.dimensions()[1],Bp)
 
-def module_product(a,b):
-    return [[x.tensor_product(identity_matrix(QQ,y.dimensions()[0],sparse=True)) +
-            identity_matrix(QQ,x.dimensions()[0],sparse=True).tensor_product(y)
-        for x,y in zip(s1,s2)] for s1,s2 in zip(a,b)]
+# returns an iterator over all order ideals by nondecreasing size
+# TODO can speed by topological sorting P and only generating new ones which are
+# new, removing the need for checking uniqueness (can use a tree generator)
+def order_ideal_iterator(P):
+    from sage.combinat.backtrack import TransitiveIdealGraded
+    g = P.hasse_diagram()
+    mi = P.minimal_elements()
+    return TransitiveIdealGraded( lambda down:
+            [down.union(frozenset([up]))
+                for _,up,_ in g.edge_boundary(down) 
+                if all(x in down for x,_,_ in g.incoming_edge_iterator([up]))] +\
+            [down.union(frozenset([up])) for up in mi if up not in down]
+            ,[frozenset()])
 
-def module_dual(a):
-    return [[-x.transpose() for x in s] for s in a]
+# an iterator over all order filters by nonincreasing size, slightly slower than
+# above
+def order_filter_iterator(P):
+    ps = frozenset(P)
+    return (ps-I for I in order_ideal_iterator(P))
+    # from sage.combinat.backtrack import TransitiveIdealGraded
+    # return TransitiveIdealGraded( lambda up:
+    #         [up-frozenset((e,)) for e in P.order_filter_generators(up)]
+    #         ,[frozenset(P)])
 
-# B is a basis of column vectors for the desired submodule
-# being a submodule is not checked
-def submodule_from_basis(a,B):
-    return [[restrict_map(m,B,B) for m in s] for s in a]
+# converts a weight space dictionary created from weight_decomposition into a common field
+def M_to_number_field(M):
+    M = [(p,(i,j),v.dimensions(),v[i,j]) 
+            for p,v in M.items() for i,j in v.nonzero_positions()]
+    S,els,_ = number_field_elements_from_algebraics([v for _,_,_,v in M])
+    MM = {}
+    for a,v in zip(M,els):
+        p,ij,dims,_ = a
+        MM.setdefault((p,dims),{})[ij] = v
+    M = {k[0]:matrix(S,k[1][0],k[1][1],v) for k,v in MM.items()}
+    return M,S
 
-# B: n x k matrix
-# C: m x l matrix
-# m: m x n matrix mapping the column space of B to the column space of C
-# returns the l x k matrix representing m in the bases B and C
-def restrict_map(m,C,B):
-    I = C.pivot_rows()
-    return C[I,:].solve_right((m*B)[I,:])
+def print_sparse_by_columns(m,st=None,header=None,sort=True):
+    if sort: 
+        m = m.columns()
+        m.sort(key = lambda c: len(c.nonzero_positions()),reverse=True)
+        m=matrix(m).transpose()
+    if st is None: st = lambda i,j,e: '%s[%d]' % (str(e),i)
+    if header is None: header = lambda j: ''
+    return '\n'.join(header(j) + ' + '.join(st(i,j,m[i,j]) 
+        for i in m.nonzero_positions_in_column(j))
+        for j in range(m.dimensions()[1]))
 
-# a : a representation of L
-# C : the cartan matrix of the semisimple part of L
-#
-# computes a dictionary summarizing info of this representation. In particular,
-# the keys of the returned dictionary are
-# 'M': a dictionary mapping weights to a distinguished basis of the corresponding weight space
-# 'C': The Cartan matrix of L
-# 'a': the representation
-# 'tot': a distinguished total ordering of the weights compatible with P; for
-#     convenience weights are given along with the multiplicity of the weight space
-# 'wtg': directed graph with a vertex for each weight and an edge for each
-#     raising operator. The edges are labelled with the raising operator between the
-#     corresponding weight spaces in the distinguished bases of those spaces
-# 
-def weight_decomposition(a,C):
-    tot = simultaneous_eigenspace(a[2])
+def psbc2(n):
+    return lambda i,j,e: '%s a%d%d' % (str(e), (i//n)%n, i%n)
 
-    totkey = lambda wt: tuple(C.solve_right(vector(QQ,wt)).list())
-    tot.sort(key=lambda p: totkey(p[1]))
+def psbc4(n):
+    return lambda i,j,e: '%s a%d%db%d%d' %\
+            (str(e), i//n^3, (i//n^2)%n, (i//n)%n, i%n)
 
-    M = {wt:V for V,wt in tot}
-    tot = [(wt,V.dimensions()[1]) for V,wt in tot]
+def psbc6(n):
+    return lambda i,j,e: '%s a%d%db%d%dc%d%d' %\
+            (str(e), i//n^5, (i//n^4)%n, (i//n^3)%n, (i//n^2)%n, (i//n)%n, i%n)
 
-    wtg = DiGraph()
-    for p in tot:
-        wt, mult = p
-        B = M[wt]
-        for i,x in enumerate(a[0]):
-            wt2 = tuple((C[:,i] + vector(wt).column()).list())
-            if wt2 in M:
-                wtg.add_edge(p,(wt2,M[wt2].dimensions()[1]),restrict_map(x,M[wt2],B))
-
-    return { 'M' : M, 'tot' : tot, 'C': C, 'a': a, 'wtg': wtg }
-
-# ms : list of matrices over QQ which commute and are diagonalizable
-# 
-# computes the simultaneous eigenspaces of ms
-def simultaneous_eigenspace(ms):
-    n = ms[0].dimensions()[0]
-    spaces = [(identity_matrix(n,sparse=True) ,())]
-    for m in ms:
-        nspaces = []
-        for B,wt in spaces:
-            for wt0,W in restrict_map(m,B,B).eigenspaces_right():
-                W = W.basis_matrix().transpose().sparse_matrix()
-                nspaces.append((B*W,wt+(wt0,)))
-        spaces = nspaces
-    return spaces
-
-# T : tensor in A ot B ot C
-#
-# returns T permuted to lie in B ot C ot A
-def tensor_cycl(T):
-    m = len(T)
-    n,s = T[0].dimensions()
-    S = [zero_matrix(QQ,s,m) for i in range(n)]
-    for i,j,k in product(range(m),range(n),range(s)):
-        S[j][k,i] = T[i][j,k]
-    return S
-
-# M : matrix
-# r : natural number 
-#
-# computes generators of the ideal of r+1 by r+1 minors of M
-def matrix_rank_le_eqs(M,r):
-    if M.base_ring() is QQ:
-        return [1] if M.rank() > r else []
-    else:
-        return list(minors_ideal(M,r+1).basis)
-
-# M : matrix with base ring a polynomial ring over QQ or a quotient of such by an ideal
-# nminors: a parameter determining when to revert to the base case in the
-#    recursive algorithm. Output should be independent of its value, but
-#    performance may be tuned
-#
-# returns the radical of the ideal of r by r minors of m
-def minors_ideal(M,r):
-    from collections import Counter
-    Rorig = M.base_ring()
-
-    if M.is_zero() or r > min(*M.dimensions()): 
-        return Rorig.ideal()
-    M,lo = sparse_elimination_by_units(M)
-    if r <= lo:
-        return Rorig.ideal(1)
-    r -= lo
-    M = M[lo:,lo:] 
-    if M.is_zero():
-        return Rorig.ideal()
-    M = M[[i for i in range(M.dimensions()[0]) if not M[i].is_zero()], 
-          [j for j in range(M.dimensions()[1]) if not M[:,j].is_zero()]]
-
-    # if desired, one can avoid the complexity added by the recursive 
-    # procedure and localization ring and immediately return the result 
-    # by computing all the minors directly (which in some cases can be 
-    # prohibitively too many). To try this, uncomment the following line
-    # return Rorig.ideal(minors_sparse(M,r))
-
-    try:
-        I = Rorig.defining_ideal()
-        R = Rorig.cover_ring()
-    except AttributeError:
-        I = Rorig.ideal(0)
-        R = Rorig
-
-    # M is assumed to have base ring of type MPolyQuoLoc
-    def rec(M,r):
-        R = M.base_ring()
-        # print R,',',r
-        if M.is_zero():
-            return R._ideal
-        if r == 1:
-            return R._ideal + [e._p for e in M.coefficients()]
-
-        e = Counter(M.dict().values()).most_common(1)[0][0]
-
-        R1 = MPolyQuoLoc(R.base(), R._ideal+e._p, R._den, nilpotents=False )
-        t = M.change_ring(R1)
-        t,lo = sparse_elimination_by_units(t)
-        I1 = rec(t[lo:,lo:],r-lo) if lo < r else R.base().ideal(1)
-
-        R2 = MPolyQuoLoc(R.base(), R._ideal, R._den*e._p, nilpotents=False )
-        t = M.change_ring(R2)
-        t,lo = sparse_elimination_by_units(t)
-        I2 = rec(t[lo:,lo:],r-lo) if lo < r else R.base().ideal(1)
-
-        return I1.intersection(I2)
-
-    S = MPolyQuoLoc(R,I,1)
-    if R is Rorig:
-        return rec(M.change_ring(S),r)
-    else:
-        return rec(M.apply_map(lambda e:
-            e.lift()).change_ring(S),r).change_ring(Rorig)
-
-# M : matrix
-# r : natural number
-#
-# computes a list containing all the nonzero r by r minors of matrix M, 
-# optimizing for very sparse M
-def minors_sparse(M,r):
-    M = M[[i for i in range(M.dimensions()[0]) if not M[i].is_zero()], [j for j
-        in range(M.dimensions()[1]) if not M[:,j].is_zero()]]
-    a,b = M.dimensions()
+def refine_candidates(candidates):
     out = []
-    for ix in combinations(range(a),r):
-        for jx in combinations([j for j in range(b) if not M[ix,j].is_zero()],r):
-            out.extend([e for e in M[ix,jx].minors(r) if not e.is_zero()])
+    for c in candidates:
+        R = c.base_ring()
+        try:
+            var = R.defining_ideal().variety(QQbar)
+            for v in var:
+                cc = c.apply_map(lambda e: e.lift()).\
+                    subs({ R.cover_ring()(x):e for x,e in v.items() })
+                try:
+                    cc = cc.change_ring(QQ)
+                except:
+                    pass
+                out.append(cc)
+        except AttributeError: # positive dimensional variety
+            try:
+                for v,m in R.modulus().roots(QQbar):
+                    cc = c.apply_map(lambda e:
+                        e.lift()).subs({R.cover_ring().gen():v})
+                    try:
+                        cc = cc.change_ring(QQ)
+                    except:
+                        pass
+                    out.append(cc)
+            except AttributeError:
+                if R.ngens() == 1 and not R.is_field(): 
+                    # how to distinguish a polynomial ring from others?
+                    R = PolynomialRing(R.base_ring(),R.gens(),implementation='singular')
+                    c = c.change_ring(R)
+                out.append(c)
     return out
 
-# M : matrix
-# 
-# row reduces M as far as possible pivoting using unit entries. Column swaps are
-# also performed. M is modified in place and the number of pivots r is returned. 
-# After this operation, M has the form
-# [ T A ]
-# [ 0 B ]
-# where T is r by r and  upper triangular with units along the diagonal, B 
-# contains no units
-def sparse_elimination_by_units(M):
-    M = copy(M)
-    def is_unit(e):
-        try:
-            return e.is_unit()
-        except NotImplementedError:
-            # This happens if we have an element of a coordinate ring which isnt constant.
-            # There is no harm to be conservative here
-            return False
-    r = 0
-    while True:
-        if r == min(*M.dimensions()): break
-        try:
-            i,j = next((i+r,j+r) for i,j in M[r:,r:].nonzero_positions() if
-                    is_unit(M[i+r,j+r]))
-        except StopIteration:
-            break
-
-        M.swap_rows(r,i)
-        M.swap_columns(r,j)
-        M[r,:] *= M[r,r].inverse_of_unit()
-        for i in M.column(r)[r+1:].nonzero_positions():
-            i += r+1
-            M.add_multiple_of_row(i,r,-M[i,r])
-        r += 1
-    return M,r
-
-# implementation of the ring R/I localized at a polynomial den, where R is a
-# multivariate polynomial ring, I an ideal, and den in R
-class MPolyQuoLoc(CommutativeRing):
-    def __init__(self, PolyR, I, den, nilpotents=True):
-        Ring.__init__(self, base=PolyR, category=CommutativeRings())
-        I = PolyR.ideal(I)
-        if not nilpotents: I = I.radical()
-        J,k = I.saturation(den)
-        if 1 in J:
-            raise ArithmeticError("invalid multiplicative set, (%s)^%d in %s" %
-                    (str(den),k,I))
-
-        self._ideal = PolyR.ideal(J.groebner_basis())
-        self._den = self._ideal.reduce(PolyR(den))
-        self._populate_coercion_lists_()
-
-    def _repr_(self):
-        return "%s mod %s localized at %s" % (self.base(), self._ideal, self._den)
-
-    def _element_constructor_(self, x):
-        if isinstance(x, MPolyQuoLocElement):
-            return MPolyQuoLocElement(self,x._p,0)*\
-                MPolyQuoLocElement(self,x.parent()._den,0).inverse_of_unit()^x._k
+def print_upset(P,up,verbose=0):
+    up = dict(up)
+    tot={p:i for i,p in enumerate(reversed(P.linear_extension()))}
+    def lab(p):
+        if verbose==2:
+            return '%s,%s:%d/%d' % (str(p[0]),str(p[1]),up.get(p,0),p[-1])
+        elif verbose==1:
+            return '%s:%d/%d' % (str(p[0]),up.get(p,0),p[-1])
         else:
-            return MPolyQuoLocElement(self,self.base()(x),0)
+            return '%d:%d/%d' % (tot[p],up.get(p,0),p[-1])
+    # return DiGraph([(lab(a),lab(b)) for a,b in P.cover_relations()])
+    return Poset(([lab(a) for a in P],[(lab(a),lab(b)) for a,b in P.cover_relations()]))
 
-    def _coerce_map_from_(self, S):
-        if S is self.base():
-            return True
-        elif isinstance(S, MPolyQuoLoc):
-            return self.base() == S.base() \
-                    and all(p in self._ideal for p in S._ideal.gens()) \
-                    and S._den.divides(self._den)
-
-class MPolyQuoLocElement(CommutativeRingElement):
-    def __init__(self, parent, p, k):
-        RingElement.__init__(self, parent)
-        if k < 0:
-            p *= parent._den^(-k)
-            k = 0
-        J = parent._ideal + parent._den
-        while k > 0:
-            try:
-                p = parent.base()(singular.lift(J,p).sage()[-1,0])
-            except TypeError: # p not in J
-                break
-            k -= 1
-        p = parent._ideal.reduce(p)
-        self._p = p
-        self._k = k
-
-    def _repr_(self):
-        if self._k > 0:
-            return "(%s)/(%s)^%d" % (self._p, self.parent()._den, self._k)
-        else:
-            return str(self._p)
- 
-    def _add_(left, right):
-        k = max(left._k, right._k)
-        return MPolyQuoLocElement(left.parent(), 
-                left._p*left.parent()._den^(k-right._k) + \
-                        right._p*left.parent()._den^(k-left._k), k)
- 
-    def _sub_(left, right):
-        k = max(left._k, right._k)
-        return MPolyQuoLocElement(left.parent(), 
-            left._p*left.parent()._den^(k-right._k) - \
-                    right._p*left.parent()._den^(k-left._k), k)
-
-    def _mul_(left, right):
-        return MPolyQuoLocElement(left.parent(), left._p * right._p, 
-                left._k + right._k)
- 
-    # c is guaranteed to be in parent().base()
-    def _rmul_(self, c):
-        return MPolyQuoLocElement(self.parent(), c * self._p, self._k)
- 
-    def _lmul_(self, c):
-        return MPolyQuoLocElement(self.parent(), self._p * c, self._k)
- 
-    @cached_method
-    def is_unit(self):
-        try:
-            self.inverse_of_unit()
-            return True
-        except ArithmeticError:
-            return False
- 
-    @cached_method
-    def inverse_of_unit(self):
-        J = self.parent().base().ideal(list(self.parent()._ideal.groebner_basis())+[self._p])
-        S,k = J.saturation(self.parent()._den)
-        if 1 not in S:
-            raise ArithmeticError("element is not a unit")
-        e = self.parent().base()(singular.lift(J,self.parent()._den^k).sage()[-1,0])
-        return MPolyQuoLocElement(self.parent(),e, k-self._k)
-
-    def _richcmp_(self, rhs, op):
-        from sage.structure.richcmp import richcmp
-        return richcmp((self._p,self._k),(rhs._p,rhs._k),op)
-
-    def __hash__(self):
-        return hash((self._p,self._k))
+def closed_under_raising(reps, ghwv):
+    r = matrix_rank(block_matrix([[ghwv]+[x*ghwv for x in reps[0]+reps[2]]]))
+    return r == ghwv.dimensions()[1]
 
 # vim: ft=python
