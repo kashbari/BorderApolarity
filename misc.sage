@@ -227,12 +227,13 @@ def nice_order_pre(g, vs):
 # tensor product of rings, with embeddings
 # works with multivariate polynomial rings over QQ and their quotients, and QQ
 # dont know how to test for univariate rings
+# Changed base to generic (lines 234,236) -kash
 def adjoin_rings(Rs):
     Rquos = [(Ri,R) for Ri,R in enumerate(Rs) \
             if sage.rings.quotient_ring.is_QuotientRing(R)]
-    from sage.rings.polynomial.multi_polynomial_ring_base import MPolynomialRing_base
+    from sage.rings.polynomial.multi_polynomial_ring_generic import MPolynomialRing_generic
     Rpolys = [(Ri,R) for Ri,R in enumerate(Rs) \
-            if isinstance(R,MPolynomialRing_base)]
+            if isinstance(R,MPolynomialRing_generic)]
     if len(Rquos) == 0 and len(Rpolys) == 0:
         return QQ,[lambda x:x for i in range(len(Rs))]
 

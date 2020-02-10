@@ -419,7 +419,7 @@ def minors_ideal(M,r):
     # procedure and localization ring and immediately return the result 
     # by computing all the minors directly (which in some cases can be 
     # prohibitively too many). To try this, uncomment the following line
-    return Rorig.ideal(minors_sparse(M,r))
+    # return Rorig.ideal(minors_sparse(M,r))
 
     try:
         I = Rorig.defining_ideal()
