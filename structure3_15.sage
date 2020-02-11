@@ -1,4 +1,4 @@
-load('borderapolarity.sage')
+load('borderapolarity3.sage')
 
 def e(i,j,n):
     return matrix(QQ,n,n,{(i,j):1})
@@ -44,6 +44,11 @@ r = 15
 upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
+
+
+##### Try 111 add S = {4,21,114} or set of upsets with candidate hwv
+#border_apolarity_cycl_inv(T,reps,C,r)
+
 #print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
 #     print v
@@ -52,24 +57,25 @@ G = grassmannian_hwvs(data,r)
 #     print v
 
 
-#SLURM IT UP
-k = int(sys.argv[1])
+########## SLURM IT UP
+#k = int(sys.argv[1])
 
-H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+#H = list(grassmannian_hwvs_for_upset(data,upsets[131],verbose=True))
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
 		yield hwt
 
 def border_apolarity_110(T,reps,C,r,k):
-	with open("RESULTS3_15/sl3rk15res{}.txt".format(k),'w') as ff:
+	with open("RESULTS3_15/sl3rk15res{}_0.txt".format(k),'w') as ff:
 		mdata,em = border_apolarity_110data(T,reps,C)
 		admin = len(T)
 		cand110 = []
 		i = 0
 		ff.write(str(len(H))+'\n')
 		if len(H) != 0:
-			for ghwv in Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r):
+			G = Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r)
+			for ghwv in G:
 				cand = em*ghwv
 				cand = AB_grass_restrict_ok(cand,admin,r)
 				if cand is not None:
@@ -78,8 +84,59 @@ def border_apolarity_110(T,reps,C,r,k):
 				else:
 					ff.write(str(i)+'. None\n')
 				i = i+1
-	return 
+	return
 
-border_apolarity_110(T,reps,C,r,k)
+# border_apolarity_110(T,reps,C,r,k)
 
+######### General for 110 and 111 simultaneously
+def border_apolarity_110N(T,reps,C,r,S):
+	mdata,em = border_apolarity_110data(T,reps,C)
+	admin = len(T)
+	cand110 = []
+	for k in S:
+		print(k)
+                G = Grassmannian_hwvs(k,mdata,em.dimensions()[0]-r)
+		if k != 4:
+                        for ghwv in G:
+                                cand = em*ghwv
+                                cand = AB_grass_restrict_ok(cand,admin,r)
+                                if cand is not None:
+                                        cand110.append(cand)
+		else:
+			next(G)
+			for ghwv in G:
+				cand = em*ghwv
+				cand = AB_grass_restrict_ok(cand,admin,r)
+				if cand is not None:
+					cand110.append(cand)
+        return cand110
+
+
+S = {4,21,114}
+cand110 = border_apolarity_110N(T,reps,C,r,S)
+print('The number of 110 candidates is:\n')
+print(len(cand110))
+
+
+
+load('borderapolarity.sage')
+load('misc.sage')
+def border_apolarity_111N(cands):
+	cand111 = []
+	for xs in product(*map(enumerate,cands)):
+		ixs = tuple(i for i,x in xs)
+		print ixs,
+		sys.stdout.flush()
+		xs = tuple(x for _,x in xs)
+		Rf,Rems = adjoin_rings([x.base_ring() for x in xs])
+		W = matrix_to_111(*[x.apply_map(em,Rf) for em,x in zip(Rems,xs)])
+		eqs = matrix_rank_le_eqs(W,W.dimensions()[0]-r)
+		if 1 in eqs: continue
+		print 'candidate'
+		cand111.append((W.change_ring(W.base_ring().quo(eqs)),ixs))
+	return cand111
+
+cand111 = border_apolarity_111N(cand110)
+print('The number of 111 candidate is:\n')
+print(len(cand111))
 # vim: ft=python

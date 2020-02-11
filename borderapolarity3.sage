@@ -404,15 +404,17 @@ def minors_ideal(M,r):
     if M.is_zero() or r > min(*M.dimensions()): 
         return Rorig.ideal()
     M,lo = sparse_elimination_by_units(M)
+    
     if r <= lo:
         return Rorig.ideal(1)
     r -= lo
-    M = M[lo:,lo:] 
+    M = M[lo:,lo:]
+    
     if M.is_zero():
         return Rorig.ideal()
     M = M[[i for i in range(M.dimensions()[0]) if not M[i].is_zero()], 
           [j for j in range(M.dimensions()[1]) if not M[:,j].is_zero()]]
-
+    
     # if desired, one can avoid the complexity added by the recursive 
     # procedure and localization ring and immediately return the result 
     # by computing all the minors directly (which in some cases can be 
