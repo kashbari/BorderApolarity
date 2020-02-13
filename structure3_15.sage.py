@@ -121,28 +121,29 @@ S = {_sage_const_4 ,_sage_const_21 ,_sage_const_114 }
 cand110 = border_apolarity_110N(T,reps,C,r,S)
 print('The number of 110 candidates is:\n')
 print(len(cand110))
-
-
-
 load('borderapolarity.sage')
 load('misc.sage')
-def border_apolarity_111N(cands):
+
+cand110 = refine_candidates(cand110)
+#Cand110 = [[t] for t in cand110]
+P = product(cand110,repeat=_sage_const_3 )
+
+def border_apolarity_111N(P):
 	cand111 = []
-	for xs in product(*map(enumerate,cands)):
-		ixs = tuple(i for i,x in xs)
-		print ixs,
-		sys.stdout.flush()
-		xs = tuple(x for _,x in xs)
+	for xs in P:
 		Rf,Rems = adjoin_rings([x.base_ring() for x in xs])
-		W = matrix_to_111(*[x.apply_map(em,Rf) for em,x in zip(Rems,xs)])
+		#Q = [x.apply_map(m,Rf) for m,x in zip(Rems,xs)]
+		W = matrix_to_111(*[x.apply_map(m,Rf) for m,x in zip(Rems,xs)])
 		eqs = matrix_rank_le_eqs(W,W.dimensions()[_sage_const_0 ]-r)
 		if _sage_const_1  in eqs: continue
 		print 'candidate'
-		cand111.append((W.change_ring(W.base_ring().quo(eqs)),ixs))
+		cand111.append([W.change_ring(W.base_ring().quo(eqs))])
 	return cand111
 
-cand111 = border_apolarity_111N(cand110)
+cand111 = border_apolarity_111N(P)
 print('The number of 111 candidate is:\n')
 print(len(cand111))
+
+
 # vim: ft=python
 
