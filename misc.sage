@@ -227,11 +227,11 @@ def nice_order_pre(g, vs):
 # tensor product of rings, with embeddings
 # works with multivariate polynomial rings over QQ and their quotients, and QQ
 # dont know how to test for univariate rings
-# Changed base to generic (lines 234,236) -kash
 def adjoin_rings(Rs):
     Rquos = [(Ri,R) for Ri,R in enumerate(Rs) \
             if sage.rings.quotient_ring.is_QuotientRing(R)]
-    from sage.rings.polynomial.multi_polynomial_ring_base import MPolynomialRing_base
+    # changed base to generix in 234 and 236
+    from sage.rings.polynomial.multi_polynomial_ring_generic import MPolynomialRing_generic
     Rpolys = [(Ri,R) for Ri,R in enumerate(Rs) \
             if isinstance(R,MPolynomialRing_base)]
     if len(Rquos) == 0 and len(Rpolys) == 0:
@@ -256,11 +256,11 @@ def adjoin_rings(Rs):
     Rems = [lambda e: Rout(e) for i in range(len(Rs))]
     for i,R in enumerate(Rquos):
         Ri,_ = R
-        Rems[Ri] = lambda p: p.lift()(Rout.gens()[startis[i]:startis[i+1]])
+        Rems[Ri] = lambda p,i=i: p.lift()(Rout.gens()[startis[i]:startis[i+1]])
     sh = len(Rquos)
     for i,R in enumerate(Rpolys):
         Ri,_ = R
-        Rems[Ri] = lambda p: p(Rout.gens()[startis[sh+i]:startis[sh+i+1]])
+        Rems[Ri] = lambda p,i=i: p(Rout.gens()[startis[sh+i]:startis[sh+i+1]])
 
     return Rout,Rems
 
