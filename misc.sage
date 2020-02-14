@@ -231,9 +231,9 @@ def nice_order_pre(g, vs):
 def adjoin_rings(Rs):
     Rquos = [(Ri,R) for Ri,R in enumerate(Rs) \
             if sage.rings.quotient_ring.is_QuotientRing(R)]
-    from sage.rings.polynomial.multi_polynomial_ring_generic import MPolynomialRing_generic
+    from sage.rings.polynomial.multi_polynomial_ring_base import MPolynomialRing_base
     Rpolys = [(Ri,R) for Ri,R in enumerate(Rs) \
-            if isinstance(R,MPolynomialRing_generic)]
+            if isinstance(R,MPolynomialRing_base)]
     if len(Rquos) == 0 and len(Rpolys) == 0:
         return QQ,[lambda x:x for i in range(len(Rs))]
 
