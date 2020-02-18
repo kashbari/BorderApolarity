@@ -127,8 +127,9 @@ def border_apolarity_111N(P):
 	cand111 = []
 	for xs in P:
 		Rf,Rems = adjoin_rings([x.base_ring() for x in xs])
-		#Q = [x.apply_map(m,Rf) for m,x in zip(Rems,xs)]
-		W = matrix_to_111(*[x.apply_map(m,Rf) for m,x in zip(Rems,xs)])
+		Q = [x.apply_map(m,Rf) for m,x in zip(Rems,xs)]
+		Q1 = [Q[0],-Q[1],-Q[2]]
+		W = matrix_to_111(*Q1)
 		eqs = matrix_rank_le_eqs(W,W.dimensions()[0]-r)
 		if 1 in eqs: continue
 		print 'candidate'
