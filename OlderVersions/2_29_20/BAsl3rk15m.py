@@ -20,31 +20,31 @@ dimS2AB = int( (n**2)*(n**2-1)*(n**2-1)/2)
 
 row = [20]
 col = [0]*len(row)
-data = [1]
-V22 = csr_matrix((data,(row,col)),shape=(n**4,1))
+ddata = [1]
+V22 = csr_matrix((ddata,(row,col)),shape=(n**4,1))
 
 
 row = [11,19]
 col = [0]*len(row)
-data = [-1,1]
-V30 = csr_matrix((data,(row,col)),shape=(n**4,1))
+ddata = [-1,1]
+V30 = csr_matrix((ddata,(row,col)),shape=(n**4,1))
 
 
 row = [23,47]
 col = [0]*len(row)
-data = [-1,1]
-V03 = csr_matrix((data,(row,col)),shape=(n**4,1))
+ddata = [-1,1]
+V03 = csr_matrix((ddata,(row,col)),shape=(n**4,1))
 
 
 row = [0,4,8,12,24,28,36,40,44,52,56,68,72,76,80]
 col = [0]*len(row)
-data = [2,-1,-1,3,3,3,-1,2,-1,3,3,3,-1,-1,2]
-V00 = csr_matrix((data,(row,col)),shape=(n**4,1))
+ddata = [2,-1,-1,3,3,3,-1,2,-1,3,3,3,-1,-1,2]
+V00 = csr_matrix((ddata,(row,col)),shape=(n**4,1))
 
 row = [2,14,18,22,26,38,46,74]
 col = [0]*len(row)
-data = [3,9,3,-6,3,-6,9,3]
-V11 = csr_matrix((data,(row,col)),shape=(n**4,1))
+ddata = [3,9,3,-6,3,-6,9,3]
+V11 = csr_matrix((ddata,(row,col)),shape=(n**4,1))
 
 
 
@@ -90,10 +90,6 @@ DIMKER[(0,)] = 35
 DIMKER[(1,)] = 35
 DIMKER[(0,1)] = 9
 '''
-<<<<<<< HEAD
-
-=======
->>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 
 H = PosetHWV.dfs(p,LE,N,P,DIMKER)
 
@@ -124,16 +120,13 @@ def HwithGrassCharts(H):
 				G.extend([PosetHWV.GrassCharts1(b[k][0],b[k][1],RING,k,bb)])
 			for g in itertools.product(*G):
 				H1.append((K,g))
-<<<<<<< HEAD
 			#G1 = list(itertools.product(*G))
 			#G2 = [ [K], G1]
 			#K1 = list(itertools.product(*G2))
 			#H1.extend(K1)
-=======
->>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 	return H1
 
-H1 = HwithGrassCharts(H)
+#H1 = HwithGrassCharts(H)
 
 def AnnPlane1(h):
 	q = H1.index(h)
@@ -166,10 +159,7 @@ def AnnPlane1(h):
 			B = A[:]
 			for j in range(len(a)):
 				print(B[a[j]].nrows(),B[a[j]].ncols())
-<<<<<<< HEAD
 				print(g[j])
-=======
->>>>>>> c417a38cd2dc0395ed703c7680ac210b99fe8316
 				B[a[j]] = B[a[j]]*(matrix(g[j]).transpose()).sparse_matrix()
 			for j in range(len(A)):
 				if B[j] != None:
@@ -267,7 +257,7 @@ AnnPlane1(H1[int(sys.argv[1])])
 =======
 <<<<<<< HEAD
 '''
-AnnPlane1(H1[int(sys.argv[1])])
+# AnnPlane1(H1[int(sys.argv[1])])
 
 '''
 =======

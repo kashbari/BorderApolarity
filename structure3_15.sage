@@ -119,9 +119,9 @@ print(len(cand110))
 load('borderapolarity.sage')
 load('misc.sage')
 
-cand110 = refine_candidates(cand110)
+Cand110 = refine_candidates(cand110)
 #Cand110 = [[t] for t in cand110]
-P = product(cand110,repeat=3)
+P = product(Cand110,repeat=3)
 
 def border_apolarity_111N(P):
 	cand111 = []
