@@ -1,4 +1,5 @@
 load('borderapolarity3.sage')
+load('distinguished.sage')
 
 def e(i,j,n):
     return matrix(QQ,n,n,{(i,j):1})
@@ -40,9 +41,12 @@ def Tsln(n):
 
 T,reps,C = Tsln(3)
 data,em = border_apolarity_110data(T,reps,C)
-r = 9
+r = 16
 upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
+
+
+D = Poset_Distinguished([(2,2),(3,0),(0,3),(1,1),(0,0)],data)
 
 #print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
@@ -62,6 +66,7 @@ upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
 		yield hwt
+
 
 def border_apolarity_110(T,reps,C,r,k):
 	with open("RESULTS/sl3rk14res{}.txt".format(k),'w') as ff:
