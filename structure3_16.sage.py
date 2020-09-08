@@ -63,9 +63,9 @@ print(len(upsets))
 
 
 ########## SLURM IT UP
-#k = int(sys.argv[1])
+k = int(sys.argv[_sage_const_1 ])
 
-#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
 '''
 with open("sl3rk16summary.txt",'a') as ff:
 	for k in range(673,876): #876
@@ -99,7 +99,7 @@ def border_apolarity_110(T,reps,C,r,k):
 				i = i+_sage_const_1 
 	return
 
-#border_apolarity_110(T,reps,C,r,k)
+border_apolarity_110(T,reps,C,r,k)
 
 ######### General for 110 and 111 simultaneously
 #def border_apolarity_110N(T,reps,C,r,S):
@@ -127,7 +127,7 @@ def border_apolarity_110(T,reps,C,r,k):
 #
 #S = {4,21,114}
 #cand110 = border_apolarity_110N(T,reps,C,r,S)
-#print('The number of 110 candidates is:\n')
+#print('The number of 210 candidates is:\n')
 #print(len(cand110))
 #load('borderapolarity.sage')
 #load('misc.sage')
