@@ -66,27 +66,23 @@ D = Poset_Distinguished([(_sage_const_2 ,_sage_const_2 ),(_sage_const_3 ,_sage_c
 k = int(sys.argv[_sage_const_1 ])
 #upp = upsetsD(upsets[k],D)
 
-H = list(grassmannian_hwvs_for_upset_distinguished(data,upsets[k],verbose=True))
+#H = list(grassmannian_hwvs_for_upset_distinguished(data,upsets[k],verbose=True))
 
 
-def Grassmannian_hwvs(k,data,verbose=True):
-	for hwt in grassmannian_hwvs_for_upset_distinguished(data,upsets[k],verbose=True):
-		yield hwt
+def Grassmannian_hwvs(k,data,verbose):
+	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
+		print(hwv)
+		if hwv.base_ring() != QQ:
+			for q in Vari(hwv):
+				yield q
 
 def border_apolarity_110(T,reps,C,r,k,D):
-        with open("DistRes3_16/sl3rk16DISTres{}_0.txt".format(k),'w') as ff:
+        with open("DistRes3_16/sl3rk16DISTres{}.txt".format(k),'w') as ff:
                 mdata,em = border_apolarity_110data(T,reps,C)
-		#mdata['M'] = D
-		#print(mdata['M'])
-		#mdata['tot'] = Dtot(D)
-		#print(mdata['tot'])
                 admin = len(T)
                 cand110 = []
-		#upp = upsetsD(upsets[k],D)
-		#print(upp)
-                i = _sage_const_0 
-                #ff.write(str(len(H))+'\n')
-                G = grassmannian_hwvs_for_upset_distinguished(mdata,upsets[k],verbose=True)
+                i = _sage_const_1 
+                G = hwvs_for_dist_upsets(D,upsets[k],data) 
                 for ghwv in G:
 			cand = em*ghwv
                         cand = AB_grass_restrict_ok(cand,admin,r)

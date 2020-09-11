@@ -96,19 +96,22 @@ def Dtot(D):
 	for d in D.keys():
 		S.append((d,D[d].dimensions()[1]))
 	return S
-'''
+
+
+#W is dictionary
+
 def Raise(E,V):
 	#E = block_matrix(2,1,a[1])
 	Rv = [ E*V[:,i] for i in range(V.dimensions()[1])]
 	F = [ block_matrix(1,3,[ V[:,range(i)],Rv[i],V[:,range(i+1,len(Rv))]],subdivide=False) for i in range(len(Rv))]
-	if rank(sum(F)) < rank(V):
+	if all(rank(F[i]) < rank(V) for i in range(len(F))):
 		return True
 	else:
 		return False
-'''	
+	
 
 
-def grassmannian_hwvs_for_upset_distinguished(mdata,up,verbose=True):
+def grassmannian_hwvs_for_upset_distinguished(mdata,up,verbose):
     C = mdata['C']
     A = mdata['a']
     M = mdata['M'] 
@@ -124,7 +127,7 @@ def grassmannian_hwvs_for_upset_distinguished(mdata,up,verbose=True):
         # This must be fine, due to conditions on up, so immediately return
         yield block_matrix([[M[p[0]] for p,_ in up]],subdivide=False)
         return
-    print('block_matrix made')
+    #print('block_matrix made')
 
     # Parameters needed. We must consider the product of grassmannians in each
     # weight space with dimensions dictated by up. In the following, letters
@@ -159,16 +162,17 @@ def grassmannian_hwvs_for_upset_distinguished(mdata,up,verbose=True):
                 inc = (ks[1]-ks[0]-1)*(j+1)
                 t[ks[0]+1:ks[1],:j+1] = matrix(R,ks[1]-ks[0]-1,j+1,R.gens()[pi:pi+inc])
                 pi += inc
-	    print(q,nz)
+	    #print(q,nz)
             W[wt] = (M[p[0]]*t, m,f)
 	
 	cur = block_matrix([[B for B,m,f in W.values()]],subdivide=False)
-	print(cur.dimensions())
+	
+	#print(cur.dimensions())
         # cur will be the result. However, first we must restrict the parameters
         # of cur to those for which the full grassmannian plane is closed under
         # raising operators. In the below, eqs will be populated with the
         # corresponding list of polynomial conditions on the parameters
-
+'''
         eqs = []
         for wt,v in W.items():
             B,m,f = v
@@ -190,7 +194,8 @@ def grassmannian_hwvs_for_upset_distinguished(mdata,up,verbose=True):
             if R.one() in I: continue
             Rbar = R.quo(I)
             cur = cur.apply_map(Rbar,sparse=True,R=Rbar)
-        print(cur.dimensions())
+        #print(cur.dimensions())
+	#print(cur.base_ring().gens())
 	yield cur
 	#if cur.base_ring() != QQ:
         #	for q in Vari(cur):
@@ -198,7 +203,7 @@ def grassmannian_hwvs_for_upset_distinguished(mdata,up,verbose=True):
 	#else:
 	#	yield cur
     if verbose: print
-
+'''
 
 #Evaluate parameters 
 def Vari(A):
@@ -220,3 +225,72 @@ def upsetsD(upset,D):
 		p0,p1 = p
 		S.append( (p0[0],D[p0[0]].dimensions()[1],p1))
 	return S
+
+
+
+def hwvs_for_dist_upsets(D,upset,data):
+	M = data['M']
+	c = []
+	for i in range(len(upset)):
+		q0,q1 = upset[i]
+		if q1 == q0[-1]:
+			c.append((q0[-1],True))
+		else:
+			c.append((D[q0[0]].dimensions()[1],False))	
+	for p in product(*[combinations(range(c[i][0]),upset[i][-1]) for i in range(len(upset))]):
+		W = {}
+		for i in range(len(upset)):
+			if c[i][1] == False:
+				W[upset[i][0][0]] = (D[upset[i][0][0]][:,p[i]],upset[i][1],D[upset[i][0][0]].dimensions()[1])
+			else:
+				W[upset[i][0][0]] = (M[upset[i][0][0]],upset[i][1],D[upset[i][0][0]].dimensions()[1])
+		cur = block_matrix([[ B for B,m,f in W.values()]],subdivide=False)
+		if rank(cur) == cur.dimensions()[1]:
+			yield cur
+
+			
+
+def EQS(W,data):
+		M = data['M']
+		A = data['a']
+		C = data['C']
+		ssrank = len(A[0])
+
+	        eqs = []
+	        for wt,v in W.items():
+		    print('wt = ',wt)
+	            B,m,f = v
+	            def raisewt(wt,k):
+	                return tuple(a+b for a,b in zip(wt,C[:,k].list()))
+	            for k in range(ssrank):
+	                rwt = raisewt(wt,k)
+			print('rwt = ',rwt)
+	                curd = W.get(rwt,None)
+			print('curd = ',curd)
+	                if curd is not None:
+	                    Braise,mr,fr = curd
+	                    #if mr == fr: continue
+	                    mm = Braise.augment(A[0][k]*B)
+	                    eqs.extend(minors_sparse(mm,mr+1))
+	                elif rwt in M:
+			    print('coeff?')
+			    print((A[0][k]*B).coefficients())
+	                    eqs.extend((A[0][k]*B).coefficients())
+		    print('+++')
+		
+		return eqs
+
+'''	
+	        if len(eqs) > 0:
+	            I = R.ideal(eqs)
+	            if R.one() in I: continue
+	            Rbar = R.quo(I)
+	            cur = cur.apply_map(Rbar,sparse=True,R=Rbar)
+	        #print(cur.dimensions())
+	        #print(cur.base_ring().gens())
+'''
+		#yield cur
+		
+
+
+
