@@ -84,10 +84,10 @@ def border_apolarity_110(T,reps,C,r,k,D):
                 i = _sage_const_1 
                 G = hwvs_for_dist_upsets(D,upsets[k],data) 
                 for ghwv in G:
-			cand = em*ghwv
+		        cand = em*ghwv
                         cand = AB_grass_restrict_ok(cand,admin,r)
                         if cand is not None:
-                        	cand110.append(cand)
+                                cand110.append(cand)
                                 ff.write(str(i)+'. Candidate\n')
                         else:
                                 ff.write(str(i)+'. None\n')
