@@ -1,0 +1,7 @@
+upsets incomplete: 
+
+36 (took long time)
+79
+103
+
+print done after each upset.

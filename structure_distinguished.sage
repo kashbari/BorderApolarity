@@ -58,7 +58,7 @@ D = Poset_Distinguished([(2,2),(3,0),(0,3),(1,1),(0,0)],data)
 
 
 #SLURM IT UP
-k = int(sys.argv[1])
+#k = int(sys.argv[1])
 #upp = upsetsD(upsets[k],D)
 
 #H = list(grassmannian_hwvs_for_upset_distinguished(data,upsets[k],verbose=True))
@@ -90,6 +90,7 @@ def border_apolarity_110(T,reps,C,r,k,D):
         return
 
 
-border_apolarity_110(T,reps,C,r,k,D)
+#border_apolarity_110(T,reps,C,r,k,D)
 
+#print('DONE')
 # vim: ft=python

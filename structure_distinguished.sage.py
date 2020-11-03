@@ -97,5 +97,6 @@ def border_apolarity_110(T,reps,C,r,k,D):
 
 border_apolarity_110(T,reps,C,r,k,D)
 
+print('DONE')
 # vim: ft=python
 

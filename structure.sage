@@ -41,7 +41,7 @@ def Tsln(n):
 T,reps,C = Tsln(3)
 data,em = border_apolarity_110data(T,reps,C)
 r = 9
-upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
+#upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
 #print len(upsets)

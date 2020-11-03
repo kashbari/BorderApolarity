@@ -58,9 +58,9 @@ G = grassmannian_hwvs(data,r)
 
 
 ########## SLURM IT UP
-k = int(sys.argv[1])
+#k = int(sys.argv[1])
 
-H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
 	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
@@ -86,7 +86,7 @@ def border_apolarity_110(T,reps,C,r,k):
 				i = i+1
 	return
 
-border_apolarity_110(T,reps,C,r,k)
+#border_apolarity_110(T,reps,C,r,k)
 
 ######### General for 110 and 111 simultaneously
 #def border_apolarity_110N(T,reps,C,r,S):

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for value in {0..526}
+for value in {104..526}
 do
 	sage structure_distinguished.sage $value
 done
