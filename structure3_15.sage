@@ -40,7 +40,7 @@ def Tsln(n):
 
 T,reps,C = Tsln(3)
 data,em = border_apolarity_110data(T,reps,C)
-r = 15
+r = 16
 upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
@@ -52,7 +52,7 @@ upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 #print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
 #     print v
-G = grassmannian_hwvs(data,r)
+##G = grassmannian_hwvs(data,r)
 # for v in grassmannian_hwvs(data,r):
 #     print v
 
@@ -112,16 +112,16 @@ def border_apolarity_110N(T,reps,C,r,S):
         return cand110
 
 
-S = {4,21,114}
-cand110 = border_apolarity_110N(T,reps,C,r,S)
-print('The number of 110 candidates is:\n')
-print(len(cand110))
+#S = {4,21,114}
+#cand110 = border_apolarity_110N(T,reps,C,r,S)
+#print('The number of 110 candidates is:\n')
+#print(len(cand110))
 load('borderapolarity.sage')
 load('misc.sage')
 
-Cand110 = refine_candidates(cand110)
-#Cand110 = [[t] for t in cand110]
-P = product(Cand110,repeat=3)
+#Cand110 = refine_candidates(cand110)
+##Cand110 = [[t] for t in cand110]
+#P = product(Cand110,repeat=3)
 
 def border_apolarity_111N(P):
 	cand111 = []
@@ -136,9 +136,9 @@ def border_apolarity_111N(P):
 		cand111.append([W.change_ring(W.base_ring().quo(eqs))])
 	return cand111
 
-cand111 = border_apolarity_111N(P)
-print('The number of 111 candidate is:\n')
-print(len(cand111))
+#cand111 = border_apolarity_111N(P)
+#print('The number of 111 candidate is:\n')
+#print(len(cand111))
 
 
 # vim: ft=python
