@@ -1,4 +1,4 @@
-load('borderapolarity.sage')
+load('borderapolarity3.sage')
 
 def e(i,j,n):
     return matrix(QQ,n,n,{(i,j):1})
@@ -14,12 +14,13 @@ def basis(i,n):
 # e_ij
 def Tsln(n):
     T = [{} for i in range(n**2-1)]
-    B = matrix(QQ,[ basis(i,n).list() for i in range(n**2-1)])
+    B = matrix(QQ,[basis(i,n).list() for i in range(n**2-1)])
     for i in range(n**2-1):
         a = basis(i,n)  
         for j in range(n**2-1):
             b = basis(j,n)
             c = a*b - b*a
+            c = c.transpose()
             c = B.solve_left(vector(QQ,c.list()))
             for k in c.nonzero_positions():
                 T[i][(j,k)] = c[k]
@@ -39,24 +40,24 @@ def Tsln(n):
     return T,[reps,reps,module_dual(reps)],C
 
 T,reps,C = Tsln(3)
-data,em = border_apolarity_110data(T,reps,C)
-r = 14
-upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
+#data,em = border_apolarity_110data(T,reps,C)
+#r = 9
+#upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
 
 
 #print len(upsets)
 # for v in grassmannian_hwvs_upsets(data,r):
 #     print v
-G = grassmannian_hwvs(data,r)
+#G = grassmannian_hwvs(data,r)
 # for v in grassmannian_hwvs(data,r):
 #     print v
 
 
 
 #SLURM IT UP
-k = int(sys.argv[1])
+#k = int(sys.argv[1])
 
-H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
+#H = list(grassmannian_hwvs_for_upset(data,upsets[k],verbose=True))
 
 
 def Grassmannian_hwvs(k,mdata,verbose=True):
@@ -81,6 +82,6 @@ def border_apolarity_110(T,reps,C,r,k):
 			i = i+1
 	return 
 
-border_apolarity_110(T,reps,C,r,k)
+#border_apolarity_110(T,reps,C,r,k)
 
 # vim: ft=python

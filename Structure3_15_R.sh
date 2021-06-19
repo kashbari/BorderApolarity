@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for value in {4,78,112,131,142}
+for value in {78,131}
 do
 	sage structure3_15.sage $value
 done

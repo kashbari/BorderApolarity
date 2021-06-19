@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#SBATCH --time=16:00:00
+#SBATCH --ntasks=1
+#SBATCH --mem=3820
+#SBATCH -O
+#SBATCH --output=/data/scratch/kbari/BorderApolarity/sl3rk16/sl3rk16_%A_%a.out
+#SBATCH --array=0-875
+
+HOME=/data/scratch/kbari sage --nodotsage /data/scratch/kbari/BorderApolarity/structure3_16.sage $SLURM_ARRAY_TASK_ID

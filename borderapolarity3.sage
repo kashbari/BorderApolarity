@@ -102,6 +102,7 @@ def grassmannian_hwvs_for_upset(mdata,up,verbose=False):
         # This must be fine, due to conditions on up, so immediately return
         yield block_matrix([[M[p[0]] for p,_ in up]],subdivide=False)
         return
+    print('block_matrix made')
 
     # Parameters needed. We must consider the product of grassmannians in each
     # weight space with dimensions dictated by up. In the following, letters
@@ -116,8 +117,9 @@ def grassmannian_hwvs_for_upset(mdata,up,verbose=False):
             for p,m in up])):
 
         if verbose:
-            print nzsi,
+            print nzsi
             sys.stdout.flush()
+            sys.stdout.write("\033[F")
 
         nvars = sum( (nzi+1)*(j-i-1) for ((wt,f),m),nz in zip(up,nzs)
             for nzi,(i,j) in enumerate(zip(nz,nz[1:]+(f,))))
@@ -138,6 +140,7 @@ def grassmannian_hwvs_for_upset(mdata,up,verbose=False):
 
             W[wt] = (M[p[0]]*t, m,f)
         cur = block_matrix([[B for B,m,f in W.values()]],subdivide=False)
+	print(cur.dimensions())
 
         # cur will be the result. However, first we must restrict the parameters
         # of cur to those for which the full grassmannian plane is closed under
@@ -165,7 +168,9 @@ def grassmannian_hwvs_for_upset(mdata,up,verbose=False):
             if R.one() in I: continue
             Rbar = R.quo(I)
             cur = cur.apply_map(Rbar,sparse=True,R=Rbar)
+	print(cur.dimensions())
         yield cur
+    print(cur.dimensions())
     if verbose: print
 
 # Returns an iterator over a set of choices of subspace dimensions for a
@@ -237,6 +242,8 @@ def grassmannian_hwvs_upsets(mdata,sz):
 def AB_grass_restrict_ok(W,adim,r):
     bdim = W.dimensions()[0] // adim
     M = matrix_11_to_21(W,adim)
+    print(M.dimensions())
+    print(M.is_sparse())
     eqs = matrix_rank_le_eqs(M, M.dimensions()[0] - r)
     # if 1 in eqs or (M.base_ring() is not QQ and 1 in M.base_ring().ideal(eqs)): 
     if 1 in eqs:
@@ -419,7 +426,7 @@ def minors_ideal(M,r):
     # procedure and localization ring and immediately return the result 
     # by computing all the minors directly (which in some cases can be 
     # prohibitively too many). To try this, uncomment the following line
-    # return Rorig.ideal(minors_sparse(M,r))
+    return Rorig.ideal(minors_sparse(M,r))
 
     try:
         I = Rorig.defining_ideal()

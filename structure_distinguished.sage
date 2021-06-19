@@ -1,0 +1,96 @@
+load('borderapolarity3.sage')
+load('distinguished.sage')
+
+def e(i,j,n):
+    return matrix(QQ,n,n,{(i,j):1})
+
+def basis(i,n):
+    assert i < n**2-1
+    i,j = i//n, i%n
+    if i==j:
+        return e(i,i,n) - e(i+1,i+1,n)
+    else:
+        return e(i,j,n)
+
+# e_ij
+def Tsln(n):
+    T = [{} for i in range(n**2-1)]
+    B = matrix(QQ,[ basis(i,n).list() for i in range(n**2-1)])
+    for i in range(n**2-1):
+        a = basis(i,n)  
+        for j in range(n**2-1):
+            b = basis(j,n)
+            c = a*b - b*a
+            c = B.solve_left(vector(QQ,c.list()))
+            for k in c.nonzero_positions():
+                T[i][(j,k)] = c[k]
+    T = [matrix(QQ,n**2-1,n**2-1,m) for m in T] 
+
+    reps = [[-T[i*n+i+1] for i in range(n-1)],
+            [-T[(i+1)*n+i] for i in range(n-1)],
+            [-T[i*n+i] for i in range(n-1)]]
+
+    C = matrix(QQ,n-1,n-1)
+    for i in range(n-1):
+        C[i,i] = 2
+    for i in range(n-2):
+        C[i+1,i] = -1
+        C[i,i+1] = -1
+
+    return T,[reps,reps,module_dual(reps)],C
+
+T,reps,C = Tsln(3)
+data,em = border_apolarity_110data(T,reps,C)
+r = 16
+upsets = list(grassmannian_hwvs_upsets(data,em.dimensions()[0]-r))
+
+
+
+D = Poset_Distinguished([(2,2),(3,0),(0,3),(1,1),(0,0)],data)
+#data['M'] = D
+#print len(upsets)
+# for v in grassmannian_hwvs_upsets(data,r):
+#     print v
+#G = grassmannian_hwvs(data,r)
+# for v in grassmannian_hwvs(data,r):
+#     print v
+
+
+
+#SLURM IT UP
+#k = int(sys.argv[1])
+#upp = upsetsD(upsets[k],D)
+
+#H = list(grassmannian_hwvs_for_upset_distinguished(data,upsets[k],verbose=True))
+
+
+def Grassmannian_hwvs(k,data,verbose):
+	for hwt in grassmannian_hwvs_for_upset(data,upsets[k],verbose):
+		print(hwv)
+		if hwv.base_ring() != QQ:
+			for q in Vari(hwv):
+				yield q
+
+def border_apolarity_110(T,reps,C,r,k,D):
+        with open("DistRes3_16/sl3rk16DISTres{}.txt".format(k),'w') as ff:
+                mdata,em = border_apolarity_110data(T,reps,C)
+                admin = len(T)
+                cand110 = []
+                i = 1
+                G = hwvs_for_dist_upsets(D,upsets[k],data) 
+                for ghwv in G:
+		        cand = em*ghwv
+                        cand = AB_grass_restrict_ok(cand,admin,r)
+                        if cand is not None:
+                                cand110.append(cand)
+                                ff.write(str(i)+'. Candidate\n')
+                        else:
+                                ff.write(str(i)+'. None\n')
+                        i = i+1
+        return
+
+
+#border_apolarity_110(T,reps,C,r,k,D)
+
+#print('DONE')
+# vim: ft=python

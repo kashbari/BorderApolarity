@@ -1,8 +1,8 @@
 #!/bin/bash
 
-for value in {302..305}
+for value in {104..875}
 do
-	sage structure.sage $value
+	sage structure_distinguished.sage $value
 done
 
 echo DONE!
